@@ -1,23 +1,602 @@
-<!doctype html>
-<html lang="de">
+<!DOCTYPE html>
+<!-- STORE-SCHALTER: ios/android jeweils "bald" (Hinweis) oder "da" (Link aktiv). Vor dem Umschalten Links unten prüfen (Suche: STORE-LINK). -->
+<html lang="de" data-ios="bald" data-android="bald">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Spurlog – Trainingsarchiv</title>
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spurlog – Trainingsarchiv fürs iPhone</title>
+<meta name="description" content="Spurlog sammelt deine Aktivitäten an einem Ort und wertet sie direkt auf deinem iPhone aus. Ohne Konto, ohne Abo, ohne Cloud.">
+<meta name="theme-color" content="#ECEDF0">
+<link rel="canonical" href="https://spurlog.app/">
+<link rel="alternate" hreflang="de" href="https://spurlog.app/">
+<link rel="alternate" hreflang="en" href="https://spurlog.app/en/">
+<link rel="alternate" hreflang="x-default" href="https://spurlog.app/en/">
+<link rel="icon" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preload" href="fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* Layout: Ein Bergpanorama trägt die Marke, eine punktierte Route läuft vom Grat
+   als Leitlinie durch die ganze Seite und endet am Ziel. */
+@font-face{font-family:"Archivo";src:url(fonts/archivo-latin-wdth-normal.woff2) format("woff2");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
+:root{
+  --paper:#ECEDF0; --paper-hi:#F7F8FA; --card:#FFFFFF;
+  --ink:#1D1B33; --ink-2:#55566B; --ink-3:#8A8C9C; --line:#D4D6DE;
+  --route:#E63E6D; --route-deep:#C22855; --route-pale:#F6C9D4; --dawn:#F4A27C;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --gutter:max(20px,env(safe-area-inset-left,0px));
+  --gutter-r:max(20px,env(safe-area-inset-right,0px));
+  --spine:0px;
+  --ease:cubic-bezier(.22,.8,.26,1);
+  color-scheme:light;
+}
+@media (min-width:900px){:root{--gutter:max(40px,env(safe-area-inset-left,0px));--gutter-r:max(40px,env(safe-area-inset-right,0px));--spine:88px}}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;background:var(--paper)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.6;font-stretch:100%;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}
+img{max-width:100%;height:auto;display:block}
+h1,h2,h3,p,ul,ol,dl,dd,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--route);outline-offset:3px;border-radius:4px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:#fff;padding:.6em 1em;border-radius:6px;z-index:20}
+.skip:focus{left:var(--gutter)}
+.wrap{max-width:1240px;margin-inline:auto;padding-left:var(--gutter);padding-right:var(--gutter-r)}
+
+/* Kopf */
+.top{position:relative;z-index:5}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:1.1rem}
+.brand{display:inline-flex;align-items:center;gap:.65rem;text-decoration:none;font-family:var(--display);font-stretch:112%;font-weight:750;font-size:1.15rem;letter-spacing:.01em;min-height:44px}
+.brand img{width:34px;height:34px;border-radius:9px;box-shadow:0 2px 8px rgba(29,27,51,.22)}
+.nav{display:flex;align-items:center;gap:clamp(1rem,3vw,2.6rem);font-size:.95rem;font-weight:500}
+.nav a{text-decoration:none;color:var(--ink-2);padding-block:.7rem;position:relative}
+.nav a::after{content:"";position:absolute;left:0;right:0;bottom:.45rem;height:2px;background:var(--route);transform:scaleX(0);transform-origin:left;transition:transform .25s var(--ease)}
+.nav .soon{color:var(--route-deep);font-weight:700}
+@media (hover:hover){.nav a:hover{color:var(--ink)}.nav a:hover::after{transform:scaleX(1)}}
+@media (max-width:760px){.nav a{display:none}}
+.nav .lang{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0 .55rem;color:var(--ink);font-weight:700;font-size:.82rem;letter-spacing:.08em}
+.nav .lang::before{content:"";position:absolute;inset:7px 0;border:1px solid var(--line);border-radius:999px;transition:border-color .2s var(--ease)}
+.nav .lang::after{display:none}
+@media (hover:hover){.nav .lang:hover::before{border-color:var(--ink-3)}}
+
+
+/* Erster Bildschirm */
+.hero{position:relative}
+.stage{position:relative;width:100%;max-width:1680px;margin-inline:auto;aspect-ratio:16/9;margin-top:-4.5rem;overflow:hidden}
+.scene{position:absolute;top:0;bottom:0;left:50%;aspect-ratio:16/9;transform:translateX(-50%)}
+.stage-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 12%,#000 78%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 12%,#000 78%,transparent 100%)}
+.word{position:absolute;left:0;right:0;top:41%;text-align:center;font-family:var(--display);font-stretch:125%;font-weight:850;font-size:15.2vw;line-height:.8;letter-spacing:-.012em;color:#fff;user-select:none;
+  -webkit-mask-image:linear-gradient(to bottom,#000 38%,transparent 96%);mask-image:linear-gradient(to bottom,#000 38%,transparent 96%);text-shadow:0 2px 40px rgba(29,27,51,.12)}
+@media (min-width:1680px){.word{font-size:255px}
+  .stage{-webkit-mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent)}}
+.route{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.route path{fill:none;stroke:var(--route);stroke-width:3.4;stroke-linecap:round;stroke-dasharray:.1 9;vector-effect:non-scaling-stroke}
+.pin{position:absolute;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:var(--route);box-shadow:0 0 0 5px rgba(230,62,109,.2)}
+.pin b{position:absolute;white-space:nowrap;font-family:var(--display);font-stretch:108%;font-size:.72rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--route-deep)}
+.pin .up{left:50%;bottom:calc(100% + 9px);transform:translateX(-50%)}
+.pin .lt{right:calc(100% + 12px);top:50%;transform:translateY(-50%)}
+.pin .rt{left:calc(100% + 12px);top:50%;transform:translateY(-50%)}
+.hero-copy{position:relative;z-index:2;margin-top:-14.4vw;display:grid;gap:clamp(1.5rem,4vw,4rem);grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:start;padding-bottom:clamp(3rem,6vw,5.5rem);padding-left:calc(var(--gutter) + var(--spine))}
+@media (min-width:1680px){.hero-copy{margin-top:-242px}}
+.kicker{font-family:var(--display);font-stretch:108%;font-size:.76rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--route-deep);margin-bottom:1rem}
+@media (min-width:900px){.hero-copy .kicker{margin-top:.4rem}}
+h1{font-family:var(--display);font-stretch:118%;font-weight:800;font-size:clamp(2.5rem,4.6vw,4.1rem);line-height:.98;letter-spacing:-.022em;text-wrap:balance}
+h1 em{font-style:normal;color:var(--route)}
+.lede{font-size:clamp(1.06rem,1.35vw,1.2rem);color:var(--ink-2);max-width:34em}
+.cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:.9rem 1.4rem;margin-top:1.6rem}
+.store{display:inline-flex;align-items:center;gap:.6rem;background:var(--route);color:#fff;font-family:var(--display);font-stretch:108%;font-weight:750;font-size:.86rem;letter-spacing:.09em;text-transform:uppercase;padding:1rem 1.6rem;border-radius:2px;text-decoration:none;box-shadow:0 10px 24px -10px rgba(230,62,109,.75);user-select:none}
+.store::before{content:"";width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.3)}
+a.store{transition:transform .12s var(--ease),background .2s}
+a.store:active{transform:scale(.97)}
+@media (hover:hover){a.store:hover{background:var(--route-deep)}}
+.more{font-weight:650;font-size:.98rem;text-decoration:none;border-bottom:2px solid var(--ink);padding-bottom:.15rem}
+@media (hover:hover){.more:hover{color:var(--route-deep);border-color:var(--route)}}
+.facts{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;margin-top:1.7rem;font-size:.86rem;font-weight:600;color:var(--ink-2)}
+.facts li{display:flex;align-items:center;gap:.5rem}
+.facts li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--route)}
+
+/* Leitlinie und Wegpunkte */
+main{position:relative}
+.trail{position:relative}
+.trail::before{content:"";position:absolute;top:0;bottom:0;left:calc(var(--gutter) + 26px);width:5px;background-image:radial-gradient(circle,var(--route) 1.7px,transparent 2.1px);background-size:5px 11px;background-repeat:repeat-y;z-index:1;pointer-events:none}
+@media (max-width:899px){.trail::before{display:none}}
+@media (min-width:1320px){.trail::before{left:calc(50% - 620px + 40px + 26px)}}
+.sec{position:relative;padding-block:clamp(3.5rem,8vw,7rem);overflow-x:clip}
+.sec .wrap{position:relative;padding-left:calc(var(--gutter) + var(--spine))}
+.way{position:relative;display:flex;align-items:center;gap:.8rem;font-family:var(--display);font-stretch:108%;font-size:.76rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--route-deep);margin-bottom:1.1rem}
+.way::before{content:"";flex:none;width:16px;height:16px;border-radius:50%;background:var(--route);box-shadow:0 0 0 5px rgba(230,62,109,.2)}
+@media (min-width:900px){.way::before{position:absolute;left:calc(-1 * var(--spine) + 20.5px);top:50%;transform:translateY(-50%);box-shadow:0 0 0 5px rgba(230,62,109,.2),0 0 0 12px var(--paper)}
+  .sec.white .way::before{box-shadow:0 0 0 5px rgba(230,62,109,.2),0 0 0 12px var(--paper-hi)}}
+h2{font-family:var(--display);font-stretch:116%;font-weight:780;font-size:clamp(1.95rem,4vw,3.3rem);line-height:1.04;letter-spacing:-.02em;text-wrap:balance;max-width:18em}
+h2 em{font-style:normal;color:var(--route)}
+.sec-lede{margin-top:1.1rem;color:var(--ink-2);max-width:40em;font-size:1.08rem}
+.white{background:var(--paper-hi)}
+
+/* Liest */
+.reads{border-block:1px solid var(--line);background:var(--paper-hi)}
+.reads .wrap{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem 1.8rem;padding-block:1.15rem;font-size:.95rem;padding-left:calc(var(--gutter) + var(--spine))}
+@media (min-width:1040px){.reads .wrap{justify-content:space-between}}
+.reads b{font-family:var(--display);font-stretch:108%;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.reads span{font-weight:600;color:var(--ink-2)}
+
+/* Warum */
+.why{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:clamp(2rem,5vw,5rem);align-items:start;margin-top:clamp(3rem,6vw,5rem)}
+.whypic{position:sticky;top:2rem;aspect-ratio:3/4;overflow:hidden;background:#1B1B22;box-shadow:0 0 0 1px var(--line)}
+.whypic img{width:100%;height:100%;object-fit:cover;object-position:50% 50%}
+.whypic svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.whypic path{fill:none;stroke:var(--route);stroke-width:3.4;stroke-linecap:round;stroke-dasharray:.1 9;vector-effect:non-scaling-stroke}
+.whypic circle{fill:var(--route)}
+.whypic .halo{fill:rgba(230,62,109,.28)}
+.gripes{display:grid;gap:clamp(1.6rem,3vw,2.4rem);counter-reset:g}
+.gripes li{position:relative;padding-left:clamp(3.4rem,6vw,4.8rem);counter-increment:g}
+.gripes li::before{content:"0" counter(g);position:absolute;left:0;top:-.5rem;font-family:var(--display);font-stretch:125%;font-weight:850;font-style:italic;font-size:clamp(2rem,3.6vw,2.9rem);line-height:1;color:var(--route-pale)}
+.gripes q{display:block;quotes:"„" "“";font-size:.95rem;color:var(--ink-3);font-style:italic;margin-bottom:.25rem}
+.gripes h3{font-family:var(--display);font-stretch:110%;font-weight:750;font-size:clamp(1.15rem,1.8vw,1.42rem);line-height:1.2;letter-spacing:-.01em}
+.gripes p{margin-top:.45rem;color:var(--ink-2);font-size:1rem;max-width:36em}
+
+/* Umziehen */
+.move{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(2rem,5vw,4.5rem);align-items:start;margin-top:clamp(2.2rem,5vw,3.6rem)}
+.steps{display:grid;gap:1.9rem}
+.steps li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1.1rem 1.4rem;align-items:start}
+.steps .n{font-family:var(--display);font-stretch:125%;font-weight:900;font-size:clamp(2.6rem,5vw,4rem);line-height:.82;color:var(--route);letter-spacing:-.03em;min-width:1.5em}
+.steps .n::before{content:"’";color:var(--route)}
+.steps h3{font-family:var(--display);font-stretch:110%;font-weight:750;font-size:1.22rem}
+.steps p{color:var(--ink-2);margin-top:.3rem;font-size:1rem}
+.report{background:var(--card);border-radius:4px;box-shadow:0 30px 60px -34px rgba(29,27,51,.35),0 0 0 1px rgba(29,27,51,.05);padding:1.4rem 1.5rem 1.2rem}
+.report header{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding-bottom:.8rem;border-bottom:2px solid var(--ink)}
+.report header b{font-family:var(--display);font-stretch:112%;font-weight:780;font-size:1.05rem}
+.report header span,.sample{font-size:.7rem;font-weight:750;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.report li{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding-block:.72rem;border-bottom:1px dotted var(--line);font-size:.93rem;font-variant-numeric:tabular-nums}
+.report li span:first-child{min-width:0;overflow-wrap:anywhere;font-weight:550}
+.st{flex:none;font-size:.78rem;font-weight:750;letter-spacing:.04em}
+.st.new{color:#1E7A52}.st.dup{color:var(--ink-3)}.st.err{color:var(--route-deep)}
+.report footer{padding-top:.85rem;font-size:.82rem;color:var(--ink-3)}
+.io{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.4rem clamp(1.5rem,4vw,3.5rem);margin-top:clamp(2.4rem,5vw,3.6rem);padding-top:1.8rem;border-top:1px solid var(--line)}
+.io dt{font-family:var(--display);font-stretch:108%;font-size:.74rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:.4rem}
+.io dd{color:var(--ink-2);font-size:1rem}
+
+/* Funktionen */
+.feat{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(2rem,6vw,6rem);align-items:center;margin-top:clamp(3rem,7vw,6rem)}
+.feat:nth-of-type(even) .shots{order:2}
+.shots{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:0;padding-block:1.5rem;isolation:isolate}
+.shots::before{content:"";position:absolute;z-index:-2;left:50%;top:50%;width:min(78%,360px);aspect-ratio:1;border:1px solid var(--line);transform:translate(-50%,-50%) rotate(45deg)}
+.shots::after{content:"";position:absolute;z-index:-2;left:50%;top:50%;width:min(58%,270px);aspect-ratio:1;background:#fff;transform:translate(-50%,-50%) rotate(45deg);opacity:.75}
+.phone{position:relative;width:min(46%,236px);aspect-ratio:660/1434;border-radius:11.5% / 5.3%;background:#15131f;padding:1.7%;box-shadow:0 34px 60px -30px rgba(29,27,51,.55),0 0 0 1px rgba(29,27,51,.12)}
+.phone img{width:100%;height:100%;object-fit:cover;border-radius:10% / 4.6%}
+.phone + .phone{margin-left:-7%;margin-bottom:9%;z-index:-1}
+.tag{display:inline-block;font-family:var(--display);font-stretch:108%;font-size:.7rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;padding:.34rem .7rem;border:1.5px solid currentColor;color:var(--ink-2);margin-bottom:1rem}
+.tag.full{color:var(--route-deep)}
+.feat h3{font-family:var(--display);font-stretch:114%;font-weight:780;font-size:clamp(1.5rem,2.6vw,2.15rem);line-height:1.1;letter-spacing:-.015em;text-wrap:balance}
+.feat p{margin-top:.8rem;color:var(--ink-2)}
+.ticks{margin-top:1.2rem;display:grid;gap:.55rem}
+.ticks li{position:relative;padding-left:1.5rem;font-size:1rem}
+.ticks li::before{content:"";position:absolute;left:.1rem;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--route)}
+.rename{margin-top:1.5rem;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;font-size:.95rem;color:var(--ink-2);padding:1rem 1.1rem;background:#fff;border-left:3px solid var(--route)}
+.rename s{color:var(--ink-3)}
+.rename strong{font-family:var(--display);font-stretch:110%;font-weight:780;color:var(--ink)}
+.rename small{flex-basis:100%;font-size:.86rem;color:var(--ink-2)}
+
+/* Preis */
+.plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(1.2rem,3vw,2rem);margin-top:clamp(2.2rem,5vw,3.6rem);align-items:stretch}
+.plan{background:var(--card);padding:clamp(1.5rem,3vw,2.4rem);box-shadow:0 0 0 1px rgba(29,27,51,.06);display:flex;flex-direction:column}
+.plan.full{background:#FFF8FA;box-shadow:0 0 0 2px var(--route)}
+.plan h3{font-family:var(--display);font-stretch:118%;font-weight:820;font-size:clamp(1.6rem,3vw,2.3rem);letter-spacing:-.02em;line-height:1}
+.plan .sub{margin-top:.5rem;font-size:.78rem;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.plan.full .sub{color:var(--route-deep)}
+.plan ul{margin-top:1.5rem;display:grid;gap:.6rem;font-size:.98rem}
+.plan li{position:relative;padding-left:1.5rem}
+.plan li::before{content:"";position:absolute;left:.1rem;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--route)}
+.plan-note{margin-top:1.6rem;color:var(--ink-2);font-size:.97rem;max-width:52em}
+
+/* Nicht gemacht */
+.nots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem clamp(1.5rem,4vw,4rem);margin-top:clamp(2rem,4vw,3rem)}
+.nots div{padding-top:1rem;border-top:2px solid var(--ink)}
+.nots dt{font-family:var(--display);font-stretch:110%;font-weight:760;font-size:1.1rem}
+.nots dd{margin-top:.3rem;color:var(--ink-2);font-size:.98rem}
+
+/* Fragen */
+.faq{margin-top:clamp(2rem,4vw,3rem);border-top:2px solid var(--ink);max-width:880px}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1.2rem;padding:1.15rem 0;font-family:var(--display);font-stretch:108%;font-weight:700;font-size:1.1rem;user-select:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:14px;height:14px;background:linear-gradient(var(--route),var(--route)) center/100% 2.5px no-repeat,linear-gradient(var(--route),var(--route)) center/2.5px 100% no-repeat;transition:transform .25s var(--ease)}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq p{padding:0 2.2rem 1.3rem 0;color:var(--ink-2);max-width:44em}
+.faq a{color:var(--route-deep);font-weight:600}
+
+/* Ziel */
+.goal{position:relative;overflow:hidden;background:var(--paper)}
+.goal-img{width:100%;max-width:1680px;margin-inline:auto;aspect-ratio:16/7;object-fit:cover;object-position:50% 6%;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 60%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 60%,transparent)}
+.goal .wrap{position:relative;margin-top:clamp(-9rem,-12vw,-4rem);padding-left:calc(var(--gutter) + var(--spine));padding-bottom:clamp(3rem,7vw,6rem)}
+.goal h2{max-width:14em}
+.goal p{margin-top:1rem;color:var(--ink-2);max-width:36em}
+.goal .way::after{content:"";position:absolute;left:calc(-1 * var(--spine) + 26px);bottom:50%;height:200vh;width:5px;background-image:radial-gradient(circle,var(--route) 1.7px,transparent 2.1px);background-size:5px 11px;background-repeat:repeat-y;z-index:-1}
+@media (max-width:899px){.goal .way::after{display:none}}
+.goal .way::before{width:22px;height:22px;left:calc(-1 * var(--spine) + 17.5px);background:var(--paper);border:6px solid var(--route)}
+
+/* Fuß */
+.foot{background:var(--paper-hi);border-top:1px solid var(--line);color:var(--ink-2);font-size:.9rem}
+.foot .wrap{padding-block:2.4rem 2.8rem;display:grid;gap:1.4rem}
+.foot nav{display:flex;flex-wrap:wrap;gap:.3rem 1.8rem}
+.foot nav a{color:var(--ink);text-decoration:none;font-weight:650;padding-block:.6rem}
+@media (hover:hover){.foot nav a:hover{color:var(--route-deep)}}
+.foot p{max-width:70em;line-height:1.55;color:var(--ink-2)}
+
+/* Bewegung */
+@media (prefers-reduced-motion:no-preference){
+  .word{animation:rise 1.1s var(--ease) both}
+  .route path{animation:draw 1.6s .25s var(--ease) both}
+  .pin{animation:pop .5s var(--ease) both}
+  .pin:nth-of-type(1){animation-delay:.6s}.pin:nth-of-type(2){animation-delay:.9s}.pin:nth-of-type(3){animation-delay:1.2s}.pin:nth-of-type(4){animation-delay:1.6s}
+  @keyframes rise{from{opacity:0;transform:translateY(8%)}to{opacity:1;transform:none}}
+  @keyframes draw{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+  @keyframes pop{from{opacity:0;transform:translate(-50%,-50%) scale(.3)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Schmal */
+@media (max-width:899px){
+  .stage{aspect-ratio:4/3.3;margin-top:-1rem}
+  .word{font-size:15.5vw;top:48%}
+  .hero-copy{grid-template-columns:minmax(0,1fr);margin-top:-16vw;gap:1.3rem}
+  .pin{width:13px;height:13px;box-shadow:0 0 0 4px rgba(230,62,109,.2)}
+  .pin b{font-size:.6rem;letter-spacing:.08em}
+  .pin.base{display:none}
+  .why,.move,.feat{grid-template-columns:minmax(0,1fr)}
+  .whypic{position:relative;top:auto;aspect-ratio:1;max-width:26rem;margin-bottom:1.5rem}
+  .feat:nth-of-type(even) .shots{order:0}
+  .plans,.nots,.io{grid-template-columns:minmax(0,1fr)}
+  .goal-img{aspect-ratio:4/3}
+  .store{width:100%;justify-content:center}
+  .cta-row{align-items:stretch}
+  .more{align-self:flex-start}
+}
+
+/* Store-Schalter: steuert, welche Knöpfe und Texte sichtbar sind. Umschalten nur im <html>-Tag oben:
+   data-ios="bald|da"  data-android="bald|da". Ohne JavaScript, die Seite bleibt statisch. */
+html[data-ios="bald"] .ios-da,html[data-ios="da"] .ios-bald,
+html[data-android="bald"] .an-da,html[data-android="da"] .an-bald{display:none!important}
+.store.alt{background:transparent;color:var(--route-deep);box-shadow:inset 0 0 0 2px var(--route)}
+.store.alt::before{background:var(--route);box-shadow:0 0 0 4px rgba(230,62,109,.18)}
+span.store.alt{color:var(--ink-2);box-shadow:inset 0 0 0 2px var(--line)}
+span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,51,.08)}
+@media (hover:hover){a.store.alt:hover{background:var(--route);color:#fff}a.store.alt:hover::before{background:#fff}}
+</style>
 </head>
 <body>
-<main>
-<nav><a href="index.html" aria-current="page">App</a><a href="datenschutz.html">Datenschutz</a><a href="support.html">Support</a><a href="impressum.html">Impressum</a></nav>
-<h1>Spurlog</h1>
-<p class="meta">Dein Trainingsarchiv für iPhone. Lokal, ohne Konto, ohne Tracking.</p>
-<p>Spurlog importiert deine Aktivitäten aus FIT-, GPX- und TCX-Dateien oder aus einem Strava-Export und zeigt sie übersichtlich an. Alle Daten bleiben auf deinem iPhone. Es gibt kein Benutzerkonto, keinen Server und keine Werbung.</p>
-<ul>
-<li><a href="datenschutz.html">Datenschutzerklärung</a></li>
-<li><a href="support.html">Support und häufige Fragen</a></li>
-<li><a href="impressum.html">Impressum</a></li>
-</ul>
-<footer>© 2026 Dominik Allgeier · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></footer>
+<a class="skip" href="#inhalt">Zum Inhalt springen</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#" aria-label="Spurlog, zum Seitenanfang"><img src="img/icon-256.png" alt="" width="34" height="34">Spurlog</a>
+    <nav class="nav" aria-label="Abschnitte">
+      <a href="#umziehen">Umziehen</a>
+      <a href="#funktionen">Funktionen</a>
+      <a href="#preis">Preis</a>
+      <a href="#fragen">Fragen</a>
+      <span class="soon ios-bald">Bald im App Store</span>
+      <a class="soon ios-da" href="#store">Laden</a>
+      <a class="lang" href="en/" hreflang="en" lang="en" aria-label="This page in English">EN</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inhalt">
+<section class="hero" aria-labelledby="claim">
+  <div class="stage">
+    <div class="scene">
+      <img class="stage-img" src="img/a-grat.jpg" alt="" width="2400" height="1350" fetchpriority="high">
+      <p class="word" aria-hidden="true">SPURLOG</p>
+      <svg class="route" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 161.5 L65.2 213.3 L94.9 256.1 L140.5 273.8 L217.7 268.5 L266.5 241.2 L372.2 224.5 L435.4 239.4 L544.3 196.6 L618.4 214.1 L667.1 187.5 L776.6 208.7 L831.6 259.6 L858.2 264.5 L929.7 233.3 L971.5 252.8 L1124.1 163.9 L1263.9 159.4 L1293 130 L1343.7 137.1 L1362.7 120.3 L1539.9 153.4 L1562.7 122.6"/>
+        <path d="M854 266 L818 366 L786 474 L864 594 L665 630"/>
+      </svg>
+      <span class="pin" style="left:23.2%;top:24.9%"><b class="up">Kein Konto</b></span>
+      <span class="pin" style="left:41.7%;top:20.8%"><b class="up">Kein Abo</b></span>
+      <span class="pin" style="left:70.3%;top:18.2%"><b class="up">Keine Cloud</b></span>
+      <span class="pin base" style="left:41.55%;top:70%"><b class="lt"><span class="an-bald">Auf deinem iPhone</span><span class="an-da">Auf deinem Handy</span></b></span>
+    </div>
+  </div>
+  <div class="wrap hero-copy">
+    <div>
+      <p class="kicker">Trainingsarchiv <span class="an-bald">fürs iPhone</span><span class="an-da">für iPhone und Android</span></p>
+      <h1 id="claim">Dein Training <em>gehört dir.</em></h1>
+    </div>
+    <div>
+      <p class="lede">Spurlog sammelt deine Aktivitäten aus Uhr, Apple Health<span class="an-da">, Health Connect</span> oder Strava-Export an einem Ort und wertet sie direkt auf deinem <span class="an-bald">iPhone</span><span class="an-da">Handy</span> aus. Du brauchst dafür kein Konto, kein Abo und keine Cloud.</p>
+      <div class="cta-row">
+        <!-- STORE-LINK App Store: href eintragen, bevor data-ios="da" gesetzt wird -->
+        <span class="store ios-bald">Bald im App Store</span>
+        <a class="store ios-da" href="https://apps.apple.com/de/app/APP-STORE-ID">Im App Store laden</a>
+        <!-- STORE-LINK Google Play: Anwendungs-ID prüfen, bevor data-android="da" gesetzt wird -->
+        <span class="store alt an-bald">Android: bald bei Google Play</span>
+        <a class="store alt an-da" href="https://play.google.com/store/apps/details?id=com.dominikallgeier.spurlog&amp;hl=de">Bei Google Play laden</a>
+        <a class="more" href="#funktionen">Was Spurlog kann</a>
+      </div>
+      <ul class="facts">
+        <li>Kein Tracking</li>
+        <li>Rechnet auch im Flugmodus</li>
+        <li>Deutsch und Englisch</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="reads">
+  <div class="wrap">
+    <b>Liest</b>
+    <span>Apple Health</span>
+    <span>FIT von Garmin, Wahoo, Coros, Polar</span>
+    <span>GPX</span>
+    <span>TCX</span>
+    <span>Strava-Export als ZIP</span>
+  </div>
+</div>
+
+<div class="trail">
+
+<section class="sec" id="warum" aria-labelledby="h-warum">
+  <div class="wrap">
+    <p class="way">Warum Spurlog</p>
+    <h2 id="h-warum">Fünf Dinge, die an Sport-Apps nerven. Und was Spurlog <em>stattdessen</em> macht.</h2>
+    <div class="why">
+      <figure class="whypic">
+        <img src="img/a-trail.jpg" alt="Eine Person läuft auf einem felsigen Grat hoch über dem Wolkenmeer, von hinten gesehen" width="1200" height="1600" loading="lazy">
+        <svg viewBox="0 0 1200 1600" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M826 1600 L784 1500 L742 1404 L690 1290 L648 1190 L622 1118 L606 1078"/><circle class="halo" cx="606" cy="1078" r="24"/><circle cx="606" cy="1078" r="13"/></svg>
+      </figure>
+      <ol class="gripes">
+        <li>
+          <q>Meine eigene Historie sehe ich nur noch, wenn ich zahle.</q>
+          <h3>Deine Historie steht nie hinter einer Bezahlschranke.</h3>
+          <p>Die Liste aller Aktivitäten, jedes Detail mit Karte, Höhen-, Pace- und Pulsprofil und der Export sind kostenlos und bleiben es. Was in Spurlog einmal frei ist, wandert nicht mehr hinter einen Kauf.</p>
+        </li>
+        <li>
+          <q>Nach dem Import fehlt meine Tour, und niemand sagt mir, warum.</q>
+          <h3>Jede Datei bekommt ein sichtbares Ergebnis.</h3>
+          <p>Nach dem Import steht bei jeder Datei, ob sie neu ist, schon vorhanden war oder warum sie nicht passt. Deine Originaldateien bleiben unverändert erhalten, und auf Wunsch sichert Spurlog das ganze Archiv automatisch in einen Ordner deiner Wahl.</p>
+        </li>
+        <li>
+          <q>Ohne Anmeldung und Netz geht gar nichts.</q>
+          <h3>Kein Konto, kein Server, keine Anmeldung.</h3>
+          <p>Alles wird auf deinem iPhone gespeichert und gerechnet, auch im Flugmodus. Nur der Kartenhintergrund kommt aus dem Netz. Ohne Verbindung siehst du deine Route als Linie.</p>
+        </li>
+        <li>
+          <q>Ich finde vor lauter Funktionen nichts mehr.</q>
+          <h3>Drei Ansichten, jede einen Tipp entfernt.</h3>
+          <p>Aktivitäten, Trainingslast, Bestzeiten. Es gibt keinen Feed, keine Werbebanner und keine Fenster, die ungefragt aufgehen. Zu jeder Zahl steht dabei, wie sie gerechnet wird.</p>
+        </li>
+        <li>
+          <q>Schon wieder ein Abo.</q>
+          <h3>Einmal kaufen, fertig.</h3>
+          <p>Die Vollversion ist ein einmaliger Kauf. Es gibt kein Abo, keine Testphase und keine automatische Verlängerung. Der Kauf gilt über die Familienfreigabe auch für deine Familie.</p>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="sec white" id="umziehen" aria-labelledby="h-umziehen">
+  <div class="wrap">
+    <p class="way">Umziehen</p>
+    <h2 id="h-umziehen">Bring deine <em>ganze</em> Historie mit.</h2>
+    <p class="sec-lede">Du musst nirgends kündigen und nichts verbinden. Spurlog liest die Dateien, die du schon hast. Getestet ist das mit einem echten Strava-Export aus 1.321 Aktivitäten.</p>
+    <div class="move">
+      <ol class="steps">
+        <li><span class="n" aria-hidden="true">01</span><div><h3>Daten holen</h3><p>Fordere bei Strava deinen Datenexport an, nimm die FIT-Dateien deiner Uhr oder erlaube den Zugriff auf deine Workouts in Apple Health.</p></div></li>
+        <li><span class="n" aria-hidden="true">02</span><div><h3>In Spurlog öffnen</h3><p>Über die Dateien-App, über „Öffnen in“ oder das Teilen-Menü. Ein Strava-Export geht als ganze ZIP-Datei hinein, auch mit tausenden Aktivitäten.</p></div></li>
+        <li><span class="n" aria-hidden="true">03</span><div><h3>Ergebnis prüfen</h3><p>Der Bericht zeigt jede Datei: neu, bereits vorhanden oder nicht lesbar mit Grund. Wer dieselbe Datei zweimal importiert, bekommt trotzdem nur einen Eintrag.</p></div></li>
+      </ol>
+      <aside class="report" aria-label="Beispiel für einen Importbericht">
+        <header><b>Importbericht</b><span>Beispiel</span></header>
+        <ul>
+          <li><span>trailrun-am-grat.fit</span><span class="st new">neu</span></li>
+          <li><span>langer-lauf.fit</span><span class="st new">neu</span></li>
+          <li><span>paesse-runde.gpx</span><span class="st new">neu</span></li>
+          <li><span>skitour-nuvolau.tcx</span><span class="st new">neu</span></li>
+          <li><span>paesse-runde.gpx</span><span class="st dup">bereits vorhanden</span></li>
+          <li><span>gipfelfoto.jpg</span><span class="st err">nicht lesbar, mit Grund</span></li>
+        </ul>
+        <footer>Jede Datei bekommt eine Zeile.</footer>
+      </aside>
+    </div>
+    <dl class="io">
+      <div><dt>Liest</dt><dd>Apple Health (auch Workouts der Apple Watch)<span class="an-da">, auf Android Health Connect</span>, FIT zum Beispiel von Garmin, Wahoo, Coros und Polar, GPX, TCX, gepackte Dateien (.gz) und den Strava-Export als ZIP.</dd></div>
+      <div><dt>Gibt wieder heraus</dt><dd>Einzelne Aktivitäten als FIT, GPX oder CSV und das ganze Archiv als ZIP, das Spurlog selbst wieder einlesen kann.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="sec" id="funktionen" aria-labelledby="h-funktionen">
+  <div class="wrap">
+    <p class="way">Funktionen</p>
+    <h2 id="h-funktionen">Ein Archiv, das mit deinen Daten etwas anfangen kann.</h2>
+    <p class="sec-lede">Die Bildschirmfotos zeigen die App mit Beispieldaten.</p>
+
+    <article class="feat">
+      <div class="shots">
+        <div class="phone"><img src="img/aktivitaeten.webp" alt="Aktivitätenliste mit Übersicht für Woche, Monat und Jahr" width="660" height="1434" loading="lazy"></div>
+        <div class="phone"><img src="img/detail.webp" alt="Detail eines Trailruns mit Karte, Kennzahlen und Höhenprofil" width="600" height="1304" loading="lazy"></div>
+      </div>
+      <div>
+        <span class="tag">Kostenlos</span>
+        <h3>Alle Aktivitäten, bis zum einzelnen Kilometer.</h3>
+        <p>Die Liste ist nach Monaten geordnet, mit Suche, Filter und einer Übersicht für Woche, Monat und Jahr. Im Detail siehst du, was die Aufzeichnung hergibt.</p>
+        <ul class="ticks">
+          <li>Karte, Höhen-, Pace- und Pulsprofil, Runden und Kilometer-Splits</li>
+          <li>Finger aufs Diagramm legen: Der Punkt auf der Karte wandert mit</li>
+          <li>Abschnitt markieren und nur diesen Teil auswerten</li>
+          <li>Notizen schreiben, umbenennen, Sportart korrigieren</li>
+          <li>Als Bild teilen, Start und Ziel bleiben dabei verborgen</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="feat">
+      <div class="shots">
+        <div class="phone"><img src="img/trainingslast.webp" alt="Trainingslast mit Fitness, Ermüdung und Form" width="660" height="1434" loading="lazy"></div>
+        <div class="phone"><img src="img/zonen.webp" alt="Wochenvolumen nach Pulszonen" width="660" height="1434" loading="lazy"></div>
+      </div>
+      <div>
+        <span class="tag full">Vollversion</span>
+        <h3>Trainingslast, die man ohne Lexikon versteht.</h3>
+        <p>Spurlog rechnet aus deiner Historie drei Werte: Fitness, Ermüdung und Form. Die Form steht in Worten da, zum Beispiel „Ausgeglichen“.</p>
+        <ul class="ticks">
+          <li>Verlauf von sechs Wochen bis zur ganzen Historie</li>
+          <li>Wochenblatt mit Vergleich zur Vorwoche und zum Schnitt der letzten vier Wochen</li>
+          <li>Volumen je Woche oder Monat, auch als Höhenmeter oder Zeit in Pulszonen</li>
+          <li>Zonen aus Maximal- und Ruhepuls oder mit den Grenzen aus deiner Leistungsdiagnostik, fürs Rad Leistungszonen aus deiner FTP</li>
+          <li>Jahresvergleich: Wo stehst du gegenüber dem Vorjahr am selben Tag?</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="feat">
+      <div class="shots">
+        <div class="phone"><img src="img/aufstieg.webp" alt="Aufstieg, Abfahrt und Pausen einer Skitour" width="660" height="1434" loading="lazy"></div>
+        <div class="phone"><img src="img/saison.webp" alt="Saisonbilanz mit Saisonziel" width="660" height="1434" loading="lazy"></div>
+      </div>
+      <div>
+        <span class="tag full">Vollversion</span>
+        <h3>Für Leute, die in Höhenmetern denken.</h3>
+        <p>Spurlog kommt aus dem Allgäu. Skitouren, Bergläufe und Wanderungen werden nicht wie flache Läufe behandelt.</p>
+        <ul class="ticks">
+          <li>Saisonbilanz über den Jahreswechsel: Touren, Höhenmeter, Tage am Berg, höchster Punkt</li>
+          <li>Aufstiegsrate in Höhenmetern pro Stunde und Zeit bis zum Gipfel</li>
+          <li>Aufstiege, Abfahrten und Pausen je Tour einzeln aufgeschlüsselt</li>
+          <li>Dieselbe Tour über die Jahre vergleichen und zwei Begehungen übereinanderlegen</li>
+          <li>Saisonziel setzen und den Stand verfolgen</li>
+        </ul>
+        <p class="rename"><s>Skitour</s> <span aria-hidden="true">→</span> <strong>Skitour Nuvolau</strong><small>Gipfelnamen schlägt Spurlog kostenlos und ohne Netz vor. Die Liste mit 117.129 Gipfeln aus dem Alpenraum und den Mittelgebirgen steckt in der App.</small></p>
+      </div>
+    </article>
+
+    <article class="feat">
+      <div class="shots">
+        <div class="phone"><img src="img/bestzeiten.webp" alt="Bestzeiten mit Leistungskurve und schnellsten 500 Höhenmetern" width="660" height="1434" loading="lazy"></div>
+        <div class="phone"><img src="img/skitour.webp" alt="Detail einer Skitour, die Route ist nach Höhe eingefärbt" width="660" height="1434" loading="lazy"></div>
+      </div>
+      <div>
+        <span class="tag full">Vollversion</span>
+        <h3>Bestzeiten, Prognose und dein Jahr in Zahlen.</h3>
+        <p>Spurlog sucht in jeder Aktivität nach deinen schnellsten Abschnitten, auch mitten in einem langen Lauf.</p>
+        <ul class="ticks">
+          <li>Bestzeiten von 1 km bis Marathon, auf dem Rad und über 500 und 1.000 Höhenmeter</li>
+          <li>Leistungskurve über alle Dauern</li>
+          <li>Wettkampfprognose von 5 km bis Marathon, die Formel steht dabei</li>
+          <li>Route eingefärbt nach Tempo, Puls, Steigung oder Höhe</li>
+          <li>Intervalle und Anstiege werden erkannt, dazu die steigungsbereinigte Pace</li>
+          <li>Jahresrückblick nach Kalenderjahr oder Wintersaison</li>
+        </ul>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="sec white" id="preis" aria-labelledby="h-preis">
+  <div class="wrap">
+    <p class="way">Preis</p>
+    <h2 id="h-preis">Das Archiv ist kostenlos. Die Auswertungen kaufst du <em>einmal.</em></h2>
+    <div class="plans">
+      <div class="plan">
+        <h3>Kostenlos</h3>
+        <p class="sub">Dauerhaft, ohne Zeitlimit</p>
+        <ul>
+          <li>Import aus Dateien, Strava-Export und Apple Health</li>
+          <li>Alle Aktivitäten mit Suche und Filter</li>
+          <li>Übersicht für Woche, Monat und Jahr</li>
+          <li>Detail mit Karte, Profilen, Runden und Kilometer-Splits</li>
+          <li>Diagramm-Cursor und Abschnitte markieren</li>
+          <li>Notizen, Umbenennen, Gipfelnamen</li>
+          <li>Export als FIT, GPX, CSV und ganzes Archiv</li>
+          <li>Automatisches Backup in einen Ordner deiner Wahl</li>
+          <li>Teilen als Bild</li>
+        </ul>
+      </div>
+      <div class="plan full">
+        <!-- PREIS: Sobald der Preis feststeht, hier unter der Überschrift eintragen, zum Beispiel
+             <p class="sub">Einmalig 0,00 €, kein Abo</p> -->
+        <h3>Vollversion</h3>
+        <p class="sub">Einmaliger Kauf, kein Abo</p>
+        <ul>
+          <li>Trainingslast mit Fitness, Ermüdung und Form</li>
+          <li>Wochenblatt, Zeit in Pulszonen, Jahresvergleich</li>
+          <li>Eigene Zonen und Leistungszonen aus der FTP</li>
+          <li>Bestzeiten, Leistungskurve und Wettkampfprognose</li>
+          <li>Jahresrückblick und Saisonbilanz mit Saisonziel</li>
+          <li>Aufstiegsrate, Aufstiege, Abfahrten und Pausen je Tour</li>
+          <li>Tourenvergleich und zwei Begehungen übereinander</li>
+          <li>Eingefärbte Route, Intervalle, Anstiege, bereinigte Pace</li>
+        </ul>
+      </div>
+    </div>
+    <p class="plan-note">Familienfreigabe<span class="an-da"> (iPhone)</span> inklusive. „Käufe wiederherstellen“ funktioniert mit deiner Apple-ID<span class="an-da"> bzw. deinem Google-Konto</span>. Vor dem Kauf zeigt dir die App eine Vorschau aus deinen eigenen Daten.</p>
+  </div>
+</section>
+
+<section class="sec" id="nicht" aria-labelledby="h-nicht">
+  <div class="wrap">
+    <p class="way">Ehrlich gesagt</p>
+    <h2 id="h-nicht">Wofür Spurlog <em>nicht</em> gemacht ist.</h2>
+    <p class="sec-lede">Spurlog ersetzt nicht jede Sport-App. Es ist der Ort, an dem deine Aktivitäten bleiben, egal womit du sie aufzeichnest.</p>
+    <dl class="nots">
+      <div><dt>Aufzeichnen</dt><dd>Das macht deine Uhr, dein Radcomputer oder die Apple Watch. Spurlog übernimmt die fertige Aktivität.</dd></div>
+      <div><dt>Feed, Kudos und Ranglisten</dt><dd>Gibt es nicht. Niemand sieht dein Training, solange du es nicht selbst teilst.</dd></div>
+      <div><dt>Routen planen und navigieren</dt><dd>Spurlog schaut zurück, nicht voraus.</dd></div>
+      <div><dt>Trainingspläne und KI-Coach</dt><dd>Spurlog zeigt dir Zahlen und erklärt, wie sie entstehen. Was du daraus machst, entscheidest du.</dd></div>
+      <div><dt>Live-Tracking</dt><dd>Bräuchte einen Server. Den gibt es bei Spurlog nicht.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="sec white" id="fragen" aria-labelledby="h-fragen">
+  <div class="wrap">
+    <p class="way">Fragen</p>
+    <h2 id="h-fragen">Kurz beantwortet.</h2>
+    <div class="faq">
+      <details><summary>Was brauche ich, um Spurlog zu nutzen?</summary><p>Ein iPhone mit iOS 18 oder neuer und Aktivitäten als Datei oder in Apple Health<span class="an-da">, oder ein Android-Gerät ab Android 8 und Aktivitäten als Datei oder in Health Connect (ab Android 9)</span>. Die App gibt es auf Deutsch und Englisch, mit Kilometern oder Meilen je nach Einstellung deines Geräts.</p></details>
+      <details><summary>Gibt es Spurlog für Android?</summary><p><span class="an-bald">Ja, bald. Die Android-Version ist in Arbeit und erscheint nach einer Testphase bei Google Play.</span><span class="an-da">Ja, bei Google Play, für Geräte ab Android 8. Sie bietet dieselben Auswertungen wie die iPhone-Version und liest Workouts aus Health Connect statt aus Apple Health.</span> Der Kauf der Vollversion gilt jeweils für den Store, in dem du kaufst.</p></details>
+      <details><summary>Muss ich meine bisherigen Sport-Apps dafür aufgeben?</summary><p>Nein. Spurlog verbindet sich mit keinem Dienst und ändert dort nichts. Du importierst Dateien oder Health-Workouts und kannst alles andere weiter benutzen.</p></details>
+      <details><summary>Was passiert mit meinen Daten, wenn ich das iPhone wechsle?</summary><p>Nutzt du ein iPhone-Backup, können die Daten der App darin enthalten sein. Zusätzlich kannst du in Spurlog ein automatisches Backup in einen Ordner einrichten, zum Beispiel in iCloud Drive, oder das Archiv von Hand als ZIP exportieren. Den Kauf stellst du mit deiner Apple-ID wieder her.</p></details>
+      <details><summary>Liest Spurlog meine Health-Daten im Hintergrund?</summary><p>Nein. Spurlog liest Workouts aus Apple Health nur, wenn du den Import selbst startest, und schreibt nichts hinein. Welche Datenarten die App lesen darf, legst du fest. Mehr dazu steht in der <a href="https://spurlog.app/datenschutz.html">Datenschutzerklärung</a>.</p></details>
+      <details><summary>Wie rechnet Spurlog?</summary><p>Offen. In der App steht bei Trainingslast und Prognose, welche Formel und welche Pulswerte verwendet werden. Weil du jede Aktivität als FIT, GPX oder CSV exportieren kannst, lässt sich alles nachrechnen.</p></details>
+      <details><summary>Wo bekomme ich Hilfe?</summary><p>Auf der <a href="https://spurlog.app/support.html">Support-Seite</a> stehen die häufigsten Fragen und die E-Mail-Adresse.</p></details>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<section class="goal" id="store" aria-labelledby="h-ziel">
+  <img class="goal-img" src="img/a-grat.jpg" alt="" width="2400" height="1350" loading="lazy">
+  <div class="wrap">
+    <p class="way">Ziel</p>
+    <h2 id="h-ziel"><span class="ios-bald">Spurlog erscheint in Kürze im <em>App Store.</em></span><span class="ios-da an-bald">Spurlog gibt es jetzt im <em>App Store.</em></span><span class="ios-da an-da">Spurlog gibt es für <em>iPhone und Android.</em></span></h2>
+    <p>Kostenlos laden, eigene Daten importieren und in Ruhe ansehen. Die Vollversion kaufst du erst, wenn du die Vorschau aus deinen eigenen Aktivitäten gesehen hast.<span class="an-bald"> Die Android-Version folgt in Kürze bei Google Play.</span></p>
+    <div class="cta-row">
+        <!-- STORE-LINK App Store: href eintragen, bevor data-ios="da" gesetzt wird -->
+        <span class="store ios-bald">Bald im App Store</span>
+        <a class="store ios-da" href="https://apps.apple.com/de/app/APP-STORE-ID">Im App Store laden</a>
+        <!-- STORE-LINK Google Play: Anwendungs-ID prüfen, bevor data-android="da" gesetzt wird -->
+        <span class="store alt an-bald">Android: bald bei Google Play</span>
+        <a class="store alt an-da" href="https://play.google.com/store/apps/details?id=com.dominikallgeier.spurlog&amp;hl=de">Bei Google Play laden</a>
+    </div>
+  </div>
+</section>
 </main>
+
+<footer class="foot">
+  <div class="wrap">
+    <nav aria-label="Rechtliches">
+      <a href="https://spurlog.app/datenschutz.html">Datenschutz</a>
+      <a href="https://spurlog.app/support.html">Support</a>
+      <a href="https://spurlog.app/impressum.html">Impressum</a>
+      <a href="https://spurlog.app/gipfeldaten.html">Gipfeldaten</a>
+      <a href="en/" hreflang="en" lang="en">English</a>
+      <a href="#inhalt">Nach oben</a>
+    </nav>
+    <p>Diese Seite setzt keine Cookies, lädt nichts von fremden Servern und kommt ohne JavaScript aus. Gipfeldaten in der App © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, lizenziert unter der ODbL, als <a href="https://spurlog.app/gipfeldaten.html">Download</a> erhältlich. Apple, iPhone, Apple Watch und App Store sind Marken von Apple Inc. Android, Google Play und Health Connect sind Marken von Google LLC. Strava, Garmin, Wahoo, Coros und Polar sind Marken ihrer Inhaber. Spurlog steht mit keinem dieser Anbieter in Verbindung.</p>
+    <p>© 2026 Dominik Allgeier</p>
+  </div>
+</footer>
 </body>
 </html>
