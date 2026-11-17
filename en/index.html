@@ -50,7 +50,7 @@
 }
 @media (min-width:900px){:root{--gutter:max(40px,env(safe-area-inset-left,0px));--gutter-r:max(40px,env(safe-area-inset-right,0px));--spine:88px}}
 *,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;background:var(--paper)}
+html{scroll-behavior:smooth;scroll-padding-top:4.5rem;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;background:var(--paper)}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.6;font-stretch:100%;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}
 img{max-width:100%;height:auto;display:block}
 h1,h2,h3,p,ul,ol,dl,dd,figure{margin:0}
@@ -64,8 +64,14 @@ p,li,dd{text-wrap:pretty}
 .wrap{max-width:1240px;margin-inline:auto;padding-left:var(--gutter);padding-right:var(--gutter-r)}
 
 /* Kopf */
-.top{position:relative;z-index:5}
-.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:1.1rem}
+/* Die Kopfzeile bleibt beim Scrollen stehen. Der Himmel des Fotos hat die Papierfarbe, deshalb fällt die Fläche am Seitenanfang nicht auf. */
+.top{position:sticky;top:0;z-index:10;background:var(--paper)}
+@supports (animation-timeline:scroll()){
+  .top{animation:topline linear both;animation-timeline:scroll();animation-range:0 160px}
+  @keyframes topline{from{box-shadow:0 1px 0 transparent}to{box-shadow:0 1px 0 var(--line)}}
+}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:.7rem}
+.links{display:flex;align-items:center;gap:clamp(1rem,3vw,2.6rem)}
 .brand{display:inline-flex;align-items:center;gap:.65rem;text-decoration:none;font-family:var(--display);font-stretch:112%;font-weight:700;font-size:1.125rem;letter-spacing:.01em;min-height:44px}
 .brand img{width:34px;height:34px;border-radius:9px;box-shadow:0 2px 8px rgba(29,27,51,.22)}
 .nav{display:flex;align-items:center;gap:clamp(1rem,3vw,2.6rem);font-size:.9375rem;font-weight:500}
@@ -74,8 +80,19 @@ p,li,dd{text-wrap:pretty}
 .nav .soon{color:var(--route-deep);font-weight:700}
 .nav .soon{white-space:nowrap}
 @media (hover:hover){.nav a:hover{color:var(--ink)}.nav a:hover::after{transform:scaleX(1)}}
-@media (max-width:760px){.nav .wide{display:none}}
-@media (max-width:350px){.nav{gap:.6rem}.brand{gap:.45rem;font-size:1rem}}
+/* Schmal: nur das Zeichen als Marke, alle Abschnitte in einer Zeile, die sich seitlich schieben lässt. */
+@media (max-width:760px){
+  .top .wrap{gap:.5rem;padding-block:.3rem}
+  .brand{position:relative;min-width:44px;justify-content:center}
+  .brand span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .nav{flex:1;min-width:0;gap:.4rem;font-size:.875rem}
+  .links{flex:1;min-width:0;gap:.6rem;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding-inline:.25rem;scroll-padding-inline:.5rem}
+  .links::-webkit-scrollbar{display:none}
+  .links a{flex:none;min-width:44px;text-align:center}
+}
+/* Auf Telefonen entfällt das Zeichen in der Kopfzeile, damit alle vier Abschnitte ohne Wischen sichtbar sind. */
+@media (max-width:420px){.brand{display:none}.links{justify-content:space-between}}
+@media (max-width:350px){.nav{font-size:.8125rem}.links{gap:.3rem}}
 .nav .lang{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0 .55rem;color:var(--ink);font-weight:700;font-size:.875rem;letter-spacing:.08em}
 .nav .lang::before{content:"";position:absolute;inset:7px 0;border:1px solid var(--line);border-radius:999px;transition:border-color .2s var(--ease)}
 .nav .lang::after{display:none}
@@ -89,8 +106,6 @@ p,li,dd{text-wrap:pretty}
 .stage-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 12%,#000 78%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 12%,#000 78%,transparent 100%)}
 .word{position:absolute;left:0;right:0;top:41%;text-align:center;font-family:var(--display);font-stretch:125%;font-weight:850;font-size:15.2vw;line-height:.8;letter-spacing:-.012em;color:#fff;user-select:none;
   -webkit-mask-image:linear-gradient(to bottom,#000 38%,transparent 96%);mask-image:linear-gradient(to bottom,#000 38%,transparent 96%);text-shadow:0 2px 40px rgba(29,27,51,.12)}
-@media (min-width:1680px){.word{font-size:255px}
-  .stage{-webkit-mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent)}}
 .route{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
 .route path{fill:none;stroke:var(--route);stroke-width:3.4;stroke-linecap:round;stroke-dasharray:.1 9;vector-effect:non-scaling-stroke}
 .pin{position:absolute;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:var(--route);box-shadow:0 0 0 5px rgba(230,62,109,.2)}
@@ -99,7 +114,14 @@ p,li,dd{text-wrap:pretty}
 .pin .lt{right:calc(100% + 12px);top:50%;transform:translateY(-50%);background:var(--paper);padding:.3em .65em;border-radius:2px}
 .pin .rt{left:calc(100% + 12px);top:50%;transform:translateY(-50%)}
 .hero-copy{position:relative;z-index:2;margin-top:-14.4vw;display:grid;gap:clamp(1.5rem,4vw,4rem);grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:start;padding-bottom:clamp(3rem,6vw,5.5rem);padding-left:calc(var(--gutter) + var(--spine))}
-@media (min-width:1680px){.hero-copy{margin-top:-242px}}
+/* Ab 900 px richtet sich die Breite der Bühne auch nach der Fensterhöhe, damit Starttermin und Preis auf Laptops
+   im ersten Bildschirm stehen. Ist die Bühne schmaler als das Fenster, laufen ihre Seiten weich aus. */
+@media (min-width:900px){
+  :root{--stage-cap:min(1680px,max(58vw,(100vh - 330px)*2.39));--stage-fade:min(6%,max(0px,100vw - var(--stage-cap))*100)}
+  .stage{max-width:var(--stage-cap);margin-top:max(-4.5rem,48px - min(100vw,var(--stage-cap))*.1024);-webkit-mask-image:linear-gradient(to right,transparent,#000 var(--stage-fade),#000 calc(100% - var(--stage-fade)),transparent);mask-image:linear-gradient(to right,transparent,#000 var(--stage-fade),#000 calc(100% - var(--stage-fade)),transparent)}
+  .word{font-size:min(15.2vw,var(--stage-cap)*.152)}
+  .hero-copy{margin-top:max(-14.4vw,var(--stage-cap)*-.144)}
+}
 .kicker{font-family:var(--display);font-stretch:108%;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--route-deep);margin-bottom:1rem}
 /* Beschriftungen, die über dem Foto liegen, bekommen eine Papierfläche, damit der Kontrast nicht vom Bild abhängt. */
 @media (min-width:900px){.hero-copy .kicker,.goal .way{width:fit-content;background:var(--paper);padding:.3em .7em;margin-left:-.7em;border-radius:2px}
@@ -122,7 +144,13 @@ a.store:active{transform:scale(.97)}
 .launch-when{font-family:var(--display);font-stretch:112%;font-weight:700;font-size:1.25rem;line-height:1.3;letter-spacing:-.01em;text-wrap:balance}
 .launch-note{margin-top:.4rem;color:var(--ink-2);font-size:1rem;max-width:36em}
 .launch-note b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
-.launch .more{margin-top:.35rem}
+.launch-actions{display:flex;flex-wrap:wrap;align-items:flex-start;gap:.3rem 1.5rem;margin-top:.9rem}
+.notify{display:inline-flex;align-items:center;min-height:44px;padding:0 1.15rem;border-radius:2px;background:var(--route-deep);color:#fff;font-family:var(--display);font-stretch:108%;font-weight:700;font-size:.875rem;letter-spacing:.09em;text-transform:uppercase;text-decoration:none;transition:background .2s}
+@media (hover:hover){.notify:hover{background:var(--route-press)}}
+.launch-fine{margin-top:.5rem;font-size:.875rem;color:var(--ink-3);max-width:36em}
+.launch-fine b{font-weight:600;color:var(--ink-2);user-select:all}
+.launch-fine + .launch-fine{margin-top:.35rem}
+.steps a{color:var(--route-deep);font-weight:600}
 .launch + .cta-row{margin-top:1.3rem}
 html[data-ios="bald"][data-android="bald"] .hero .cta-row{display:none}
 
@@ -141,6 +169,7 @@ main{position:relative}
 h2{font-family:var(--display);font-stretch:118%;font-weight:800;font-size:clamp(1.95rem,4vw,3.3rem);line-height:1.04;letter-spacing:-.02em;text-wrap:balance;max-width:18em}
 h2 em{font-style:normal;color:var(--route)}
 .sec-lede{margin-top:1.1rem;color:var(--ink-2);max-width:40em;font-size:1.125rem}
+.sec-lede a{color:var(--route-deep);font-weight:600}
 .white{background:var(--paper-hi)}
 
 /* Liest */
@@ -152,7 +181,7 @@ h2 em{font-style:normal;color:var(--route)}
 
 /* Warum */
 .why{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:clamp(2rem,5vw,5rem);align-items:start;margin-top:clamp(3rem,6vw,5rem)}
-.whypic{position:sticky;top:2rem;aspect-ratio:3/4;overflow:hidden;background:#1B1B22;box-shadow:0 0 0 1px var(--line)}
+.whypic{position:sticky;top:5.5rem;aspect-ratio:3/4;overflow:hidden;background:#1B1B22;box-shadow:0 0 0 1px var(--line)}
 .whypic img{width:100%;height:100%;object-fit:cover;object-position:50% 50%}
 .whypic svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .whypic path{fill:none;stroke:var(--route);stroke-width:3.4;stroke-linecap:round;stroke-dasharray:.1 9;vector-effect:non-scaling-stroke}
@@ -179,6 +208,7 @@ h2 em{font-style:normal;color:var(--route)}
 .report li{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding-block:.72rem;border-bottom:1px dotted var(--line);font-size:.9375rem;font-variant-numeric:tabular-nums}
 .report li span:first-child{min-width:0;overflow-wrap:anywhere;font-weight:600}
 .st{flex:none;font-size:.875rem;font-weight:700;letter-spacing:.02em}
+.st.err{flex:0 1 auto;text-align:right}
 .st.new{color:#1E7A52}.st.dup{color:var(--ink-3)}.st.err{color:var(--route-deep)}
 .report footer{padding-top:.85rem;font-size:.875rem;color:var(--ink-3)}
 .io{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.4rem clamp(1.5rem,4vw,3.5rem);margin-top:clamp(2.4rem,5vw,3.6rem);padding-top:1.8rem;border-top:1px solid var(--line)}
@@ -195,6 +225,18 @@ h2 em{font-style:normal;color:var(--route)}
 .phone img{width:100%;height:100%;object-fit:cover;border-radius:10% / 4.6%}
 .phone + .phone{width:min(50%,250px);margin-left:-11%;margin-bottom:9%;z-index:-1}
 @media (hover:hover){.phone:hover{transform:translateY(-6px)}}
+/* Bildschirmfoto in voller Größe: natives Popover, ohne JavaScript. Esc und ein Klick daneben schließen es,
+   der Fokus kehrt zum Bild zurück, und es entsteht kein Eintrag im Verlauf. */
+button.phone{appearance:none;-webkit-appearance:none;border:0;font:inherit;color:inherit}
+.zoom{display:none}
+.zoom:popover-open{display:block;position:fixed;inset:0;margin:auto;width:fit-content;height:fit-content;max-width:calc(100vw - 2rem);max-height:100vh;max-height:100dvh;padding:0;border:0;background:transparent;color:#fff;overflow:auto;overscroll-behavior:contain}
+.zoom::backdrop{background:rgba(29,27,51,.9)}
+.zoom figure{display:grid;justify-items:center;gap:.6rem;padding-bottom:1rem}
+.zoom figcaption{position:sticky;top:0;z-index:1;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.3rem 1.2rem;width:100%;padding:.6rem .8rem;background:rgba(29,27,51,.94);color:#fff;font-size:.9375rem;text-align:center}
+.zoom img{width:min(440px,100vw - 2rem);border-radius:14px;box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
+.zoom .close{appearance:none;-webkit-appearance:none;border:0;background:transparent;cursor:pointer;display:inline-flex;align-items:center;min-height:44px;padding:0 1.1rem;border-radius:2px;box-shadow:inset 0 0 0 2px #fff;color:#fff;font-family:var(--display);font-stretch:108%;font-weight:700;font-size:.875rem;letter-spacing:.09em;text-transform:uppercase}
+.zoom .close:focus-visible{outline-color:#fff}
+@media (hover:hover){.zoom .close:hover{background:#fff;color:var(--ink)}}
 .tag{display:inline-block;font-family:var(--display);font-stretch:108%;font-size:.75rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;padding:.34rem .7rem;border:1.5px solid currentColor;color:var(--ink-2);margin-bottom:1rem}
 .tag.full{color:var(--route-deep)}
 .feat h3{font-family:var(--display);font-stretch:112%;font-weight:800;font-size:clamp(1.5rem,2.6vw,2.15rem);line-height:1.1;letter-spacing:-.015em;text-wrap:balance}
@@ -220,7 +262,7 @@ h2 em{font-style:normal;color:var(--route)}
 .plan ul{margin-top:1.3rem;display:grid;gap:.6rem;font-size:1rem}
 .plan li{position:relative;padding-left:1.5rem}
 .plan li::before{content:"";position:absolute;left:.1rem;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--route)}
-.plan-note{margin-top:1.6rem;color:var(--ink-2);font-size:1rem;max-width:52em}
+.plan-note{margin-top:1.6rem;color:var(--ink-2);font-size:1rem;max-width:40em}
 
 /* Nicht gemacht */
 .nots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem clamp(1.5rem,4vw,4rem);margin-top:clamp(2rem,4vw,3rem)}
@@ -242,6 +284,8 @@ h2 em{font-style:normal;color:var(--route)}
 .goal{position:relative;overflow:hidden;background:var(--paper)}
 .goal-img{width:100%;max-width:1680px;margin-inline:auto;aspect-ratio:16/7;object-fit:cover;object-position:50% 6%;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 60%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 60%,transparent)}
 .goal .wrap{position:relative;margin-top:clamp(-9rem,-12vw,-4rem);padding-left:calc(var(--gutter) + var(--spine));padding-bottom:clamp(3rem,7vw,6rem)}
+/* Der Abschnitt beginnt mit dem Foto; ein Sprung zu #store soll bei der Überschrift landen. */
+#store{scroll-margin-top:calc(-1 * (min(43.75vw,735px) - clamp(4rem,12vw,9rem) - 1.5rem))}
 .goal h2{max-width:14em}
 .goal p:not(.way):not(.launch-when){margin-top:1rem;color:var(--ink-2);max-width:36em}
 .goal .way::after{content:"";position:absolute;left:calc(-1 * var(--spine) + 26px + .7em);bottom:50%;height:200vh;width:5px;background-image:radial-gradient(circle,var(--route) 1.7px,transparent 2.1px);background-size:5px 11px;background-repeat:repeat-y;z-index:-1}
@@ -252,7 +296,7 @@ h2 em{font-style:normal;color:var(--route)}
 .foot{background:var(--paper-hi);border-top:1px solid var(--line);color:var(--ink-2);font-size:.875rem}
 .foot .wrap{padding-block:2.4rem 2.8rem;display:grid;gap:1.4rem}
 .foot nav{display:flex;flex-wrap:wrap;gap:.3rem 1.8rem}
-.foot nav a{color:var(--ink);text-decoration:none;font-weight:600;padding-block:.75rem}
+.foot nav a{color:var(--ink);text-decoration:none;font-weight:600;padding-block:.75rem;min-width:44px}
 @media (hover:hover){.foot nav a:hover{color:var(--route-deep)}}
 .foot p{max-width:72ch;line-height:1.55;color:var(--ink-2)}
 
@@ -270,7 +314,7 @@ h2 em{font-style:normal;color:var(--route)}
 
 /* Schmal */
 @media (max-width:899px){
-  .stage{aspect-ratio:4/3.3;margin-top:-1rem}
+  .stage{aspect-ratio:4/3;margin-top:0}
   .word{font-size:15.5vw;top:48%}
   .hero-copy{grid-template-columns:minmax(0,1fr);margin-top:-16vw;gap:1.3rem}
   .pin{width:13px;height:13px;box-shadow:0 0 0 4px rgba(230,62,109,.2)}
@@ -283,6 +327,7 @@ h2 em{font-style:normal;color:var(--route)}
   .feat:nth-of-type(even) .shots{order:0}
   .plans,.nots,.io{grid-template-columns:minmax(0,1fr)}
   .goal-img{aspect-ratio:4/3}
+  #store{scroll-margin-top:calc(-1 * (75vw - clamp(4rem,12vw,9rem) - 1.5rem))}
   .store{width:100%;justify-content:center}
   .cta-row{align-items:stretch}
   .more{align-self:flex-start}
@@ -307,13 +352,15 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
 
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#" aria-label="Spurlog, back to top"><img src="../img/icon-256.png" alt="" width="34" height="34">Spurlog</a>
+    <a class="brand" href="#" aria-label="Spurlog, back to top"><img src="../img/icon-256.png" alt="" width="34" height="34"><span>Spurlog</span></a>
     <nav class="nav" aria-label="Sections">
-      <a class="wide" href="#umziehen">Switch</a>
-      <a class="wide" href="#funktionen">Features</a>
-      <a href="#preis">Pricing</a>
-      <a href="#fragen">FAQ</a>
-      <a class="soon ios-da" href="#store">Download</a>
+      <div class="links">
+        <a href="#umziehen">Switch</a>
+        <a href="#funktionen">Features</a>
+        <a href="#preis">Pricing</a>
+        <a href="#fragen">FAQ</a>
+        <a class="soon ios-da" href="#store">Download</a>
+      </div>
       <a class="lang" href="../" hreflang="de" lang="de" aria-label="Diese Seite auf Deutsch">DE</a>
     </nav>
   </div>
@@ -332,22 +379,27 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
       <span class="pin" style="left:23.2%;top:24.9%"><b class="up">No account</b></span>
       <span class="pin" style="left:41.7%;top:20.8%"><b class="up">No subscription</b></span>
       <span class="pin" style="left:70.3%;top:18.2%"><b class="up">No cloud</b></span>
-      <span class="pin base" style="left:41.55%;top:70%"><b class="lt"><span class="an-bald">On your iPhone</span><span class="an-da">On your phone</span></b></span>
+      <span class="pin base" style="left:41.55%;top:70%"><b class="lt">On your phone</b></span>
     </div>
   </div>
   <div class="wrap hero-copy">
     <div>
-      <p class="kicker">Training archive for <span class="an-bald">iPhone</span><span class="an-da">iPhone and Android</span></p>
+      <p class="kicker">Training archive for iPhone and Android</p>
       <h1 id="claim">Your training <em>stays yours.</em></h1>
     </div>
     <div>
-      <p class="lede">Spurlog brings your activities from your watch, Apple Health<span class="an-da">, Health Connect</span> or your Strava export together in one place and analyzes them right on your <span class="an-bald">iPhone</span><span class="an-da">phone</span>. No account, no subscription, no cloud.</p>
+      <p class="lede">Spurlog brings your activities from your watch, Apple Health, Health Connect or your Strava export together in one place and analyzes them right on your phone. No account, no subscription, no cloud.</p>
       <div class="launch ios-bald">
-        <!-- STARTTERMIN: change here and in the “Finish” section -->
+        <!-- STARTTERMIN: change here, in the FAQ and in the “Finish” section -->
         <p class="launch-when">Expected on the App Store in early December 2026.</p>
         <!-- PREIS: launch price and regular price -->
-        <p class="launch-note">The archive is free. The full version costs <b>€9.99</b> at launch and €14.99 afterwards, as a one-time purchase with no subscription.<span class="an-bald"> The Android version will follow on Google Play after a testing phase.</span></p>
-        <a class="more" href="#funktionen">What Spurlog does</a>
+        <p class="launch-note">The archive is free. The full version costs <b>€9.99</b> for the first four weeks, then €14.99, once.</p>
+        <div class="launch-actions">
+          <a class="notify" href="mailto:trainingsarchiv.app@gmail.com?subject=Spurlog%3A%20let%20me%20know%20at%20launch&amp;body=Please%20let%20me%20know%20when%20Spurlog%20is%20released.%0A%0AI%20use%3A%20iPhone%20/%20Android">Let me know</a>
+          <a class="more" href="#funktionen">What Spurlog does</a>
+        </div>
+        <p class="launch-fine">The button opens your mail app with a ready-made message. You get one reply at launch, nothing else. No mail app? Write to <b>trainingsarchiv.app@gmail.com</b>.</p>
+        <p class="launch-fine an-bald">The Android version comes to Google Play once Google’s mandatory two-week test is complete; the date is not fixed yet.</p>
       </div>
       <div class="cta-row">
         <!-- STORE-LINK App Store: fill in href before setting data-ios="da" -->
@@ -356,7 +408,7 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
         <a class="store alt an-da" href="https://play.google.com/store/apps/details?id=com.dominikallgeier.spurlog&amp;hl=en">Get it on Google Play</a>
         <a class="more ios-da" href="#funktionen">What Spurlog does</a>
       </div>
-      <p class="launch-note ios-da an-bald">The Android version will follow on Google Play after a testing phase.</p>
+      <p class="launch-note ios-da an-bald">The Android version comes to Google Play once Google’s mandatory two-week test is complete; the date is not fixed yet.</p>
     </div>
   </div>
 </section>
@@ -364,7 +416,7 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
 <div class="reads">
   <div class="wrap">
     <b>Reads</b>
-    <span>Apple Health</span>
+    <span>Apple Health and Health Connect</span>
     <span>FIT from Garmin, Wahoo, Coros, Polar</span>
     <span>GPX</span>
     <span>TCX</span>
@@ -397,7 +449,7 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
         <li>
           <q>Nothing works without a login and a connection.</q>
           <h3>No account, no server, no sign-in.</h3>
-          <p>Everything is stored and calculated on your iPhone, even in airplane mode. Only the map background comes from the internet. Offline, you see your route as a line.</p>
+          <p>Everything is stored and calculated on your phone, even in airplane mode. Only the map background comes from the internet. Offline, you see your route as a line.</p>
         </li>
         <li>
           <q>There are so many features, I can’t find anything.</q>
@@ -422,7 +474,7 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
     <p class="sec-lede">Nothing to cancel, nothing to connect. Spurlog reads the files you already have. We tested it with a real Strava export of 1,321 activities.</p>
     <div class="move">
       <ol class="steps">
-        <li><span class="n" aria-hidden="true">01</span><div><h3>Get your data</h3><p>Request your data export from Strava: on strava.com under Settings → My Account → “Download or Delete Your Account”. Your Strava account stays as it is; the link arrives by email, usually within a few hours.<span class="ios-bald"> Request it now and it will be ready at launch.</span> Or grab the FIT files from your watch, or allow access to your workouts in Apple Health.</p></div></li>
+        <li><span class="n" aria-hidden="true">01</span><div><h3>Get your data</h3><p>Request your data export from Strava: on strava.com under Settings → My Account → “Download or Delete Your Account” (<a href="https://support.strava.com/en-us/articles/15401919-how-do-i-export-my-strava-data">Strava’s instructions</a>). Your Strava account stays as it is. The link arrives by email, which can take anywhere from a few hours to a few days.<span class="ios-bald"> Request it now and it will be ready at launch.</span> Or grab the FIT files from your watch, or allow access to your workouts in Apple Health or Health Connect. The app explains how this works for your watch.</p></div></li>
         <li><span class="n" aria-hidden="true">02</span><div><h3>Open it in Spurlog</h3><p>From the Files app, with “Open in” or the share sheet. A Strava export goes in as a single ZIP file, even with thousands of activities.</p></div></li>
         <li><span class="n" aria-hidden="true">03</span><div><h3>Check the result</h3><p>The report lists every file: new, already there, or unreadable with the reason. Import the same file twice and you still get just one entry.</p></div></li>
       </ol>
@@ -434,13 +486,13 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
           <li><span>mountain-pass-loop.gpx</span><span class="st new">new</span></li>
           <li><span>ski-tour-nuvolau.tcx</span><span class="st new">new</span></li>
           <li><span>mountain-pass-loop.gpx</span><span class="st dup">already there</span></li>
-          <li><span>summit-photo.jpg</span><span class="st err">unreadable, with reason</span></li>
+          <li><span>summit-photo.jpg</span><span class="st err">Unknown file format</span></li>
         </ul>
         <footer>Every file gets its own line.</footer>
       </aside>
     </div>
     <dl class="io">
-      <div><dt>Reads</dt><dd>Apple Health (including Apple Watch workouts)<span class="an-da">, Health Connect on Android</span>, FIT from Garmin, Wahoo, Coros, Polar and others, GPX, TCX, compressed files (.gz) and the Strava export as a ZIP.</dd></div>
+      <div><dt>Reads</dt><dd>Apple Health (including Apple Watch workouts), Health Connect on Android, FIT from Garmin, Wahoo, Coros, Polar and others, GPX, TCX, compressed files (.gz) and the Strava export as a ZIP.</dd></div>
       <div><dt>Exports</dt><dd>Single activities as FIT, GPX or CSV, and your whole archive as a ZIP that Spurlog can read back in.</dd></div>
     </dl>
   </div>
@@ -452,10 +504,10 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
     <h2 id="h-funktionen">An archive that actually does something with your data.</h2>
     <p class="sec-lede">The screenshots show the app with sample data. Tap one to open it at full size.</p>
 
-    <article class="feat">
+    <article class="feat" id="f1">
       <div class="shots">
-        <a class="phone" href="../img/en/activities.webp"><img src="../img/en/activities.webp" alt="Activity list with an overview for the week, month and year" width="660" height="1434" loading="lazy"></a>
-        <a class="phone" href="../img/en/detail-ski-tour.webp"><img src="../img/en/detail-ski-tour.webp" alt="Detail of a ski tour with map, key figures and route colored by altitude" width="660" height="1434" loading="lazy"></a>
+        <button type="button" class="phone" popovertarget="shot-activities"><img src="../img/en/activities.webp" alt="Activity list with an overview for the week, month and year" width="660" height="1434" loading="lazy"></button>
+        <button type="button" class="phone" popovertarget="shot-detail-ski-tour"><img src="../img/en/detail-ski-tour.webp" alt="Detail of a ski tour with map, key figures and route colored by altitude" width="660" height="1434" loading="lazy"></button>
       </div>
       <div>
         <span class="tag">Free</span>
@@ -471,10 +523,10 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
       </div>
     </article>
 
-    <article class="feat">
+    <article class="feat" id="f2">
       <div class="shots">
-        <a class="phone" href="../img/en/training-load.webp"><img src="../img/en/training-load.webp" alt="Training load with fitness, fatigue and form" width="660" height="1434" loading="lazy"></a>
-        <a class="phone" href="../img/en/zones.webp"><img src="../img/en/zones.webp" alt="Weekly volume by heart rate zone" width="660" height="1434" loading="lazy"></a>
+        <button type="button" class="phone" popovertarget="shot-training-load"><img src="../img/en/training-load.webp" alt="Training load with fitness, fatigue and form" width="660" height="1434" loading="lazy"></button>
+        <button type="button" class="phone" popovertarget="shot-zones"><img src="../img/en/zones.webp" alt="Weekly volume by heart rate zone" width="660" height="1434" loading="lazy"></button>
       </div>
       <div>
         <span class="tag full">Full version</span>
@@ -490,10 +542,10 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
       </div>
     </article>
 
-    <article class="feat">
+    <article class="feat" id="f3">
       <div class="shots">
-        <a class="phone" href="../img/en/ascent-descent.webp"><img src="../img/en/ascent-descent.webp" alt="Ascents, descents and breaks of a ski tour" width="660" height="1434" loading="lazy"></a>
-        <a class="phone" href="../img/en/season.webp"><img src="../img/en/season.webp" alt="Season summary with a season goal" width="660" height="1434" loading="lazy"></a>
+        <button type="button" class="phone" popovertarget="shot-ascent-descent"><img src="../img/en/ascent-descent.webp" alt="Ascents, descents and breaks of a ski tour" width="660" height="1434" loading="lazy"></button>
+        <button type="button" class="phone" popovertarget="shot-season"><img src="../img/en/season.webp" alt="Season summary with a season goal" width="660" height="1434" loading="lazy"></button>
       </div>
       <div>
         <span class="tag full">Full version</span>
@@ -510,9 +562,9 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
       </div>
     </article>
 
-    <article class="feat">
+    <article class="feat" id="f4">
       <div class="shots">
-        <a class="phone" href="../img/en/personal-bests.webp"><img src="../img/en/personal-bests.webp" alt="Personal bests with performance curve and fastest 500 meters of climbing" width="660" height="1434" loading="lazy"></a>
+        <button type="button" class="phone" popovertarget="shot-personal-bests"><img src="../img/en/personal-bests.webp" alt="Personal bests with performance curve and fastest 500 meters of climbing" width="660" height="1434" loading="lazy"></button>
       </div>
       <div>
         <span class="tag full">Full version</span>
@@ -541,7 +593,7 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
         <p class="sub">Forever, no time limit</p>
         <p class="terms">Once something is free, it never moves behind a purchase.</p>
         <ul>
-          <li>Import from files, Strava export and Apple Health</li>
+          <li>Import from files, Strava export, Apple Health and Health Connect</li>
           <li>All activities with search and filters</li>
           <li>Overview for the week, month and year</li>
           <li>Detail view with map, profiles, laps and kilometer splits</li>
@@ -556,7 +608,7 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
         <!-- PREIS: launch price €9.99, regular €14.99. The end date of the launch price is only in the p-start line. -->
         <h3>Full version <span class="amount"><span class="p-vor p-start">€9.99</span><span class="p-voll">€14.99</span></span></h3>
         <p class="sub">One-time purchase, no subscription</p>
-        <p class="terms"><span class="p-vor">Launch price for the first four weeks, €14.99 afterwards.</span><span class="p-start">Launch price until 31 December 2026, €14.99 afterwards.</span><span class="p-voll">Pay once, keep it for good.</span></p>
+        <p class="terms"><span class="p-vor">Launch price for the first four weeks after launch in each store, €14.99 afterwards.</span><span class="p-start">Launch price on the App Store until 31 December 2026, on Google Play for four weeks from its launch there. €14.99 afterwards.</span><span class="p-voll">Pay once, keep it for good.</span></p>
         <ul>
           <li>Training load with fitness, fatigue and form</li>
           <li>Weekly summary, time in heart rate zones, year comparison</li>
@@ -569,7 +621,7 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
         </ul>
       </div>
     </div>
-    <p class="plan-note"><span class="p-vor p-start">Buy at the launch price and the full version is yours for good. </span>Family Sharing<span class="an-da"> (iPhone)</span> included. “Restore Purchases” works with your Apple ID<span class="an-da"> or Google account</span>. Before you buy, the app shows you a preview built from your own data. Prices are in euros; in other currencies the store sets the equivalent.</p>
+    <p class="plan-note"><span class="p-vor p-start">Buy at the launch price and the full version is yours for good. </span>Family Sharing (iPhone) included. “Restore Purchases” works with your Apple ID or Google account. Before you buy, the app shows you a preview built from your own data. Prices are in euros; in other currencies the store sets the equivalent.</p>
   </div>
 </section>
 
@@ -593,8 +645,10 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
     <p class="way">FAQ</p>
     <h2 id="h-fragen">Quick answers.</h2>
     <div class="faq">
-      <details><summary>What do I need to use Spurlog?</summary><p>An iPhone with iOS 18 or later and activities as files or in Apple Health<span class="an-da">, or an Android device running Android 8 or later and activities as files or in Health Connect (Android 9 or later)</span>. The app is available in English and German and uses kilometers or miles depending on your device settings.</p></details>
-      <details><summary>Is Spurlog available for Android?</summary><p><span class="an-bald">Yes, soon. The Android version is in the works and will come to Google Play after a testing phase.</span><span class="an-da">Yes, on Google Play, for devices running Android 8 or later. It offers the same analyses as the iPhone version and reads workouts from Health Connect instead of Apple Health.</span> The full version purchase applies to the store you buy it in.</p></details>
+      <!-- STARTTERMIN -->
+      <details class="ios-bald"><summary>When will Spurlog be released?</summary><p>On the App Store, expected in early December 2026. The Android version comes to Google Play once Google’s mandatory two-week test is complete; the date is not fixed yet. If you like, <a href="mailto:trainingsarchiv.app@gmail.com?subject=Spurlog%3A%20let%20me%20know%20at%20launch&amp;body=Please%20let%20me%20know%20when%20Spurlog%20is%20released.%0A%0AI%20use%3A%20iPhone%20/%20Android">I’ll let you know by email</a>.</p></details>
+      <details><summary>What do I need to use Spurlog?</summary><p>An iPhone with iOS 18 or later and activities as files or in Apple Health, or an Android device running Android 8 or later and activities as files or in Health Connect (Android 9 or later). The app is available in English and German and uses kilometers or miles depending on your device settings.</p></details>
+      <details><summary>Is Spurlog available for Android?</summary><p><span class="an-bald">Yes. Before release, Google requires new developers to run a test with at least twelve testers for two weeks. Once that is complete, Spurlog comes to Google Play; the date is not fixed yet. The Android version offers the same analyses as the iPhone version and reads workouts from Health Connect instead of Apple Health. The launch price applies there for four weeks from the Android launch.</span><span class="an-da">Yes, on Google Play, for devices running Android 8 or later. It offers the same analyses as the iPhone version and reads workouts from Health Connect instead of Apple Health.</span> The full version purchase applies to the store you buy it in.</p></details>
       <details><summary>Do I have to give up my other sports apps?</summary><p>No. Spurlog doesn’t connect to any service and doesn’t change anything there. You import files or Health workouts and keep using everything else as before.</p></details>
       <details><summary>What happens to my data when I get a new iPhone?</summary><p>If you use an iPhone backup, the app’s data can be included in it. You can also set up an automatic backup to a folder in Spurlog, for example in iCloud Drive, or export your archive manually as a ZIP. You restore your purchase with your Apple ID.</p></details>
       <details><summary>Does Spurlog read my Health data in the background?</summary><p>No. Spurlog only reads workouts from Apple Health when you start the import yourself, and it never writes anything to Health. You decide which types of data the app may read. Details are in the <a href="privacy.html">privacy policy</a>.</p></details>
@@ -610,11 +664,12 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
   <img class="goal-img" src="../img/a-grat.jpg" srcset="../img/a-grat-1200.webp 1200w, ../img/a-grat-1800.webp 1800w, ../img/a-grat.jpg 2400w" sizes="(max-width:899px) 134vw, (max-width:1680px) 100vw, 1680px" alt="" width="2400" height="1350" loading="lazy">
   <div class="wrap">
     <p class="way">Finish</p>
-    <h2 id="h-ziel"><!-- STARTTERMIN --><span class="ios-bald">Spurlog is expected on the App Store in <em>early December.</em></span><span class="ios-da an-bald">Spurlog is now on the <em>App Store.</em></span><span class="ios-da an-da">Spurlog is available for <em>iPhone and Android.</em></span></h2>
+    <h2 id="h-ziel"><!-- STARTTERMIN --><span class="ios-bald">Spurlog is expected on the App Store in <em>early December 2026.</em></span><span class="ios-da an-bald">Spurlog is now on the <em>App Store.</em></span><span class="ios-da an-da">Spurlog is available for <em>iPhone and Android.</em></span></h2>
     <!-- PREIS -->
-    <p>Download it for free, import your own data and take your time. You only buy the full version<span class="p-vor p-start"> (€9.99 at launch, €14.99 afterwards)</span><span class="p-voll"> (€14.99, once)</span> after you’ve seen the preview built from your own activities.<span class="an-bald"> The Android version is coming soon to Google Play.</span></p>
+    <p>Download it for free, import your own data and take your time. You only buy the full version<span class="p-vor p-start"> (€9.99 at launch, €14.99 afterwards)</span><span class="p-voll"> (€14.99, once)</span> after you’ve seen the preview built from your own activities.</p>
     <div class="cta-row">
-        <a class="more ios-bald" href="#umziehen">Request your Strava export now</a>
+        <a class="notify ios-bald" href="mailto:trainingsarchiv.app@gmail.com?subject=Spurlog%3A%20let%20me%20know%20at%20launch&amp;body=Please%20let%20me%20know%20when%20Spurlog%20is%20released.%0A%0AI%20use%3A%20iPhone%20/%20Android">Let me know</a>
+        <a class="more ios-bald" href="#umziehen">How to get your Strava export</a>
         <!-- STORE-LINK App Store: fill in href before setting data-ios="da" -->
         <a class="store ios-da" href="https://apps.apple.com/app/APP-STORE-ID">Download on the App Store</a>
         <!-- STORE-LINK Google Play: check application ID before setting data-android="da" -->
@@ -622,6 +677,29 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
     </div>
   </div>
 </section>
+
+<!-- Einblendungen der Bildschirmfotos -->
+<div class="zoom" id="shot-activities" popover>
+  <figure><figcaption><span>Activity list with an overview for the week, month and year</span><button type="button" class="close" popovertarget="shot-activities" popovertargetaction="hide">Close</button></figcaption><img src="../img/en/activities.webp" alt="" width="660" height="1434" loading="lazy"></figure>
+</div>
+<div class="zoom" id="shot-detail-ski-tour" popover>
+  <figure><figcaption><span>Detail of a ski tour with map, key figures and route colored by altitude</span><button type="button" class="close" popovertarget="shot-detail-ski-tour" popovertargetaction="hide">Close</button></figcaption><img src="../img/en/detail-ski-tour.webp" alt="" width="660" height="1434" loading="lazy"></figure>
+</div>
+<div class="zoom" id="shot-training-load" popover>
+  <figure><figcaption><span>Training load with fitness, fatigue and form</span><button type="button" class="close" popovertarget="shot-training-load" popovertargetaction="hide">Close</button></figcaption><img src="../img/en/training-load.webp" alt="" width="660" height="1434" loading="lazy"></figure>
+</div>
+<div class="zoom" id="shot-zones" popover>
+  <figure><figcaption><span>Weekly volume by heart rate zone</span><button type="button" class="close" popovertarget="shot-zones" popovertargetaction="hide">Close</button></figcaption><img src="../img/en/zones.webp" alt="" width="660" height="1434" loading="lazy"></figure>
+</div>
+<div class="zoom" id="shot-ascent-descent" popover>
+  <figure><figcaption><span>Ascents, descents and breaks of a ski tour</span><button type="button" class="close" popovertarget="shot-ascent-descent" popovertargetaction="hide">Close</button></figcaption><img src="../img/en/ascent-descent.webp" alt="" width="660" height="1434" loading="lazy"></figure>
+</div>
+<div class="zoom" id="shot-season" popover>
+  <figure><figcaption><span>Season summary with a season goal</span><button type="button" class="close" popovertarget="shot-season" popovertargetaction="hide">Close</button></figcaption><img src="../img/en/season.webp" alt="" width="660" height="1434" loading="lazy"></figure>
+</div>
+<div class="zoom" id="shot-personal-bests" popover>
+  <figure><figcaption><span>Personal bests with performance curve and fastest 500 meters of climbing</span><button type="button" class="close" popovertarget="shot-personal-bests" popovertargetaction="hide">Close</button></figcaption><img src="../img/en/personal-bests.webp" alt="" width="660" height="1434" loading="lazy"></figure>
+</div>
 </main>
 
 <footer class="foot">
