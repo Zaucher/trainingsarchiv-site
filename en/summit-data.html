@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Summit data – Spurlog</title>
+<meta name="description" content="The peak list bundled with Spurlog as a download. Data © OpenStreetMap contributors, Open Database License.">
+<meta name="theme-color" content="#ECEDF0">
+<link rel="canonical" href="https://spurlog.app/en/summit-data.html">
+<link rel="alternate" hreflang="de" href="https://spurlog.app/gipfeldaten.html">
+<link rel="alternate" hreflang="en" href="https://spurlog.app/en/summit-data.html">
+<link rel="icon" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preload" href="../fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip" href="#inhalt">Skip to content</a>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="Spurlog, home"><img src="../img/icon-256.png" alt="" width="34" height="34">Spurlog</a>
+    <nav class="nav" aria-label="Pages"><a href="support.html">Support</a><a href="privacy.html">Privacy</a><a href="legal-notice.html">Legal notice</a><a href="summit-data.html" aria-current="page">Summit data</a></nav>
+    <a class="lang" href="../gipfeldaten.html" hreflang="de" lang="de" aria-label="Diese Seite auf Deutsch">DE</a>
+  </div>
+</header>
+<main id="inhalt">
+<div class="wrap doc">
+<h1>Summit data</h1>
+<p class="meta">The peak list from Spurlog as a download</p>
+
+<p>For ski tours, hikes and trail runs, Spurlog suggests a name based on the highest summit reached, for example “Ski tour Hochgern”. For this the app carries a peak list from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, so that it works without a connection. You can download exactly this list here.</p>
+
+<div class="box"><p><strong><a href="../daten/spurlog-gipfel-1.2.zip" download>spurlog-gipfel-1.2.zip</a></strong> · 1.8 MB · matches Spurlog 1.2<br>
+117,129 named peaks, roughly 43–51° north and 5–17° east. A table (tab-separated, UTF-8) with latitude, longitude, name and elevation in meters, plus a license text and a description of how the list was made. The archive contains an English <code>LICENSE.txt</code>.</p></div>
+
+<h2>License</h2>
+<p>Data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>. The peak list is a derived database and, like OpenStreetMap, is available under the <a href="https://opendatacommons.org/licenses/odbl/1-0/">Open Database License (ODbL) 1.0</a>. You may use, change and pass it on as long as you credit OpenStreetMap and offer changed versions under the ODbL again.</p>
+<p>The app itself and your activities are not covered by this license.</p>
+
+<h2>How the list was made</h2>
+<p>All points tagged <code>natural=peak</code> with a name were queried through the Overpass API. Elevations given in feet were converted, implausible values discarded and duplicate entries with the same name at almost the same place merged. The details are in the file <code>LIZENZ.txt</code> in the download.</p>
+<p>Is a summit missing or a name wrong? Then it can be corrected directly in <a href="https://www.openstreetmap.org">OpenStreetMap</a> and will reach the app with a later version.</p>
+</div>
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <nav aria-label="All pages"><a href="./">Home</a><a href="support.html">Support</a><a href="privacy.html">Privacy</a><a href="legal-notice.html">Legal notice</a><a href="summit-data.html">Summit data</a></nav>
+    <p>© 2026 Dominik Allgeier</p>
+  </div>
+</footer>
+</body>
+</html>

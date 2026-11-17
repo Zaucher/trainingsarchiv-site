@@ -1,6 +1,9 @@
 <!DOCTYPE html>
-<!-- STORE-SCHALTER: ios/android jeweils "bald" (Hinweis) oder "da" (Link aktiv). Vor dem Umschalten Links unten prüfen (Suche: STORE-LINK). -->
-<html lang="de" data-ios="bald" data-android="bald">
+<!-- STORE-SCHALTER: ios/android jeweils "bald" (Hinweis) oder "da" (Link aktiv). Vor dem Umschalten Links unten prüfen (Suche: STORE-LINK).
+     PREIS-SCHALTER: data-preis="vor" (vor dem Start), "start" (Einführungspreis läuft, Enddatum sichtbar) oder "voll" (regulärer Preis).
+     Beträge und Enddatum stehen an den Stellen mit dem Kommentar PREIS. Der voraussichtliche Starttermin steht bei STARTTERMIN.
+     Dieselben Schalter gibt es in en/index.html. -->
+<html lang="de" data-ios="bald" data-android="bald" data-preis="vor">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -35,8 +38,8 @@
 @font-face{font-family:"Archivo";src:url(fonts/archivo-latin-wdth-normal.woff2) format("woff2");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
 :root{
   --paper:#ECEDF0; --paper-hi:#F7F8FA; --card:#FFFFFF;
-  --ink:#1D1B33; --ink-2:#55566B; --ink-3:#8A8C9C; --line:#D4D6DE;
-  --route:#E63E6D; --route-deep:#C22855; --route-pale:#F6C9D4; --dawn:#F4A27C;
+  --ink:#1D1B33; --ink-2:#55566B; --ink-3:#65677A; --line:#D4D6DE;
+  --route:#E63E6D; --route-deep:#C22855; --route-press:#A61F47; --route-pale:#F6C9D4;
   --display:"Archivo","Helvetica Neue",Arial,sans-serif;
   --body:"Archivo","Helvetica Neue",Arial,sans-serif;
   --gutter:max(20px,env(safe-area-inset-left,0px));
@@ -54,6 +57,8 @@ h1,h2,h3,p,ul,ol,dl,dd,figure{margin:0}
 ul,ol{padding:0;list-style:none}
 a{color:inherit}
 :focus-visible{outline:3px solid var(--route);outline-offset:3px;border-radius:4px}
+::selection{background:var(--route-pale);color:var(--ink)}
+p,li,dd{text-wrap:pretty}
 .skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:#fff;padding:.6em 1em;border-radius:6px;z-index:20}
 .skip:focus{left:var(--gutter)}
 .wrap{max-width:1240px;margin-inline:auto;padding-left:var(--gutter);padding-right:var(--gutter-r)}
@@ -61,15 +66,17 @@ a{color:inherit}
 /* Kopf */
 .top{position:relative;z-index:5}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:1.1rem}
-.brand{display:inline-flex;align-items:center;gap:.65rem;text-decoration:none;font-family:var(--display);font-stretch:112%;font-weight:750;font-size:1.15rem;letter-spacing:.01em;min-height:44px}
+.brand{display:inline-flex;align-items:center;gap:.65rem;text-decoration:none;font-family:var(--display);font-stretch:112%;font-weight:700;font-size:1.125rem;letter-spacing:.01em;min-height:44px}
 .brand img{width:34px;height:34px;border-radius:9px;box-shadow:0 2px 8px rgba(29,27,51,.22)}
-.nav{display:flex;align-items:center;gap:clamp(1rem,3vw,2.6rem);font-size:.95rem;font-weight:500}
+.nav{display:flex;align-items:center;gap:clamp(1rem,3vw,2.6rem);font-size:.9375rem;font-weight:500}
 .nav a{text-decoration:none;color:var(--ink-2);padding-block:.7rem;position:relative}
 .nav a::after{content:"";position:absolute;left:0;right:0;bottom:.45rem;height:2px;background:var(--route);transform:scaleX(0);transform-origin:left;transition:transform .25s var(--ease)}
 .nav .soon{color:var(--route-deep);font-weight:700}
+.nav .soon{white-space:nowrap}
 @media (hover:hover){.nav a:hover{color:var(--ink)}.nav a:hover::after{transform:scaleX(1)}}
-@media (max-width:760px){.nav a{display:none}}
-.nav .lang{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0 .55rem;color:var(--ink);font-weight:700;font-size:.82rem;letter-spacing:.08em}
+@media (max-width:760px){.nav .wide{display:none}}
+@media (max-width:350px){.nav{gap:.6rem}.brand{gap:.45rem;font-size:1rem}}
+.nav .lang{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0 .55rem;color:var(--ink);font-weight:700;font-size:.875rem;letter-spacing:.08em}
 .nav .lang::before{content:"";position:absolute;inset:7px 0;border:1px solid var(--line);border-radius:999px;transition:border-color .2s var(--ease)}
 .nav .lang::after{display:none}
 @media (hover:hover){.nav .lang:hover::before{border-color:var(--ink-3)}}
@@ -87,28 +94,37 @@ a{color:inherit}
 .route{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
 .route path{fill:none;stroke:var(--route);stroke-width:3.4;stroke-linecap:round;stroke-dasharray:.1 9;vector-effect:non-scaling-stroke}
 .pin{position:absolute;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:var(--route);box-shadow:0 0 0 5px rgba(230,62,109,.2)}
-.pin b{position:absolute;white-space:nowrap;font-family:var(--display);font-stretch:108%;font-size:.72rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--route-deep)}
+.pin b{position:absolute;white-space:nowrap;font-family:var(--display);font-stretch:108%;font-size:.75rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--route-deep)}
 .pin .up{left:50%;bottom:calc(100% + 9px);transform:translateX(-50%)}
-.pin .lt{right:calc(100% + 12px);top:50%;transform:translateY(-50%)}
+.pin .lt{right:calc(100% + 12px);top:50%;transform:translateY(-50%);background:var(--paper);padding:.3em .65em;border-radius:2px}
 .pin .rt{left:calc(100% + 12px);top:50%;transform:translateY(-50%)}
 .hero-copy{position:relative;z-index:2;margin-top:-14.4vw;display:grid;gap:clamp(1.5rem,4vw,4rem);grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:start;padding-bottom:clamp(3rem,6vw,5.5rem);padding-left:calc(var(--gutter) + var(--spine))}
 @media (min-width:1680px){.hero-copy{margin-top:-242px}}
-.kicker{font-family:var(--display);font-stretch:108%;font-size:.76rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--route-deep);margin-bottom:1rem}
-@media (min-width:900px){.hero-copy .kicker{margin-top:.4rem}}
+.kicker{font-family:var(--display);font-stretch:108%;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--route-deep);margin-bottom:1rem}
+/* Beschriftungen, die über dem Foto liegen, bekommen eine Papierfläche, damit der Kontrast nicht vom Bild abhängt. */
+@media (min-width:900px){.hero-copy .kicker,.goal .way{width:fit-content;background:var(--paper);padding:.3em .7em;margin-left:-.7em;border-radius:2px}
+  .hero-copy .kicker{margin-top:.4rem}}
 h1{font-family:var(--display);font-stretch:118%;font-weight:800;font-size:clamp(2.5rem,4.6vw,4.1rem);line-height:.98;letter-spacing:-.022em;text-wrap:balance}
 h1 em{font-style:normal;color:var(--route)}
-.lede{font-size:clamp(1.06rem,1.35vw,1.2rem);color:var(--ink-2);max-width:34em}
+.lede{font-size:clamp(1.0625rem,1.35vw,1.1875rem);color:var(--ink-2);max-width:34em}
 .cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:.9rem 1.4rem;margin-top:1.6rem}
-.store{display:inline-flex;align-items:center;gap:.6rem;background:var(--route);color:#fff;font-family:var(--display);font-stretch:108%;font-weight:750;font-size:.86rem;letter-spacing:.09em;text-transform:uppercase;padding:1rem 1.6rem;border-radius:2px;text-decoration:none;box-shadow:0 10px 24px -10px rgba(230,62,109,.75);user-select:none}
+.store{display:inline-flex;align-items:center;gap:.6rem;background:var(--route-deep);color:#fff;font-family:var(--display);font-stretch:108%;font-weight:700;font-size:.875rem;letter-spacing:.09em;text-transform:uppercase;padding:1rem 1.6rem;border-radius:2px;text-decoration:none;box-shadow:0 10px 24px -10px rgba(194,40,85,.7);user-select:none}
 .store::before{content:"";width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.3)}
 a.store{transition:transform .12s var(--ease),background .2s}
 a.store:active{transform:scale(.97)}
-@media (hover:hover){a.store:hover{background:var(--route-deep)}}
-.more{font-weight:650;font-size:.98rem;text-decoration:none;border-bottom:2px solid var(--ink);padding-bottom:.15rem}
-@media (hover:hover){.more:hover{color:var(--route-deep);border-color:var(--route)}}
-.facts{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;margin-top:1.7rem;font-size:.86rem;font-weight:600;color:var(--ink-2)}
-.facts li{display:flex;align-items:center;gap:.5rem}
-.facts li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--route)}
+@media (hover:hover){a.store:hover{background:var(--route-press)}}
+.more{display:inline-flex;align-items:center;min-height:44px;font-weight:600;font-size:1rem;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.3em}
+@media (hover:hover){.more:hover{color:var(--route-deep);text-decoration-color:var(--route)}}
+
+/* Startstatus vor der Veröffentlichung: ein Wegpunkt, der noch vor dir liegt. Kein Knopf. */
+.launch{position:relative;margin-top:1.6rem;padding-left:2.2rem;max-width:34em}
+.launch::before{content:"";position:absolute;left:0;top:.2rem;width:20px;height:20px;border-radius:50%;border:5px solid var(--route)}
+.launch-when{font-family:var(--display);font-stretch:112%;font-weight:700;font-size:1.25rem;line-height:1.3;letter-spacing:-.01em;text-wrap:balance}
+.launch-note{margin-top:.4rem;color:var(--ink-2);font-size:1rem;max-width:36em}
+.launch-note b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+.launch .more{margin-top:.35rem}
+.launch + .cta-row{margin-top:1.3rem}
+html[data-ios="bald"][data-android="bald"] .hero .cta-row{display:none}
 
 /* Leitlinie und Wegpunkte */
 main{position:relative}
@@ -118,20 +134,20 @@ main{position:relative}
 @media (min-width:1320px){.trail::before{left:calc(50% - 620px + 40px + 26px)}}
 .sec{position:relative;padding-block:clamp(3.5rem,8vw,7rem);overflow-x:clip}
 .sec .wrap{position:relative;padding-left:calc(var(--gutter) + var(--spine))}
-.way{position:relative;display:flex;align-items:center;gap:.8rem;font-family:var(--display);font-stretch:108%;font-size:.76rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--route-deep);margin-bottom:1.1rem}
+.way{position:relative;display:flex;align-items:center;gap:.8rem;font-family:var(--display);font-stretch:108%;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--route-deep);margin-bottom:1.1rem}
 .way::before{content:"";flex:none;width:16px;height:16px;border-radius:50%;background:var(--route);box-shadow:0 0 0 5px rgba(230,62,109,.2)}
 @media (min-width:900px){.way::before{position:absolute;left:calc(-1 * var(--spine) + 20.5px);top:50%;transform:translateY(-50%);box-shadow:0 0 0 5px rgba(230,62,109,.2),0 0 0 12px var(--paper)}
   .sec.white .way::before{box-shadow:0 0 0 5px rgba(230,62,109,.2),0 0 0 12px var(--paper-hi)}}
-h2{font-family:var(--display);font-stretch:116%;font-weight:780;font-size:clamp(1.95rem,4vw,3.3rem);line-height:1.04;letter-spacing:-.02em;text-wrap:balance;max-width:18em}
+h2{font-family:var(--display);font-stretch:118%;font-weight:800;font-size:clamp(1.95rem,4vw,3.3rem);line-height:1.04;letter-spacing:-.02em;text-wrap:balance;max-width:18em}
 h2 em{font-style:normal;color:var(--route)}
-.sec-lede{margin-top:1.1rem;color:var(--ink-2);max-width:40em;font-size:1.08rem}
+.sec-lede{margin-top:1.1rem;color:var(--ink-2);max-width:40em;font-size:1.125rem}
 .white{background:var(--paper-hi)}
 
 /* Liest */
 .reads{border-block:1px solid var(--line);background:var(--paper-hi)}
-.reads .wrap{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem 1.8rem;padding-block:1.15rem;font-size:.95rem;padding-left:calc(var(--gutter) + var(--spine))}
+.reads .wrap{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem 1.8rem;padding-block:1.15rem;font-size:.9375rem;padding-left:calc(var(--gutter) + var(--spine))}
 @media (min-width:1040px){.reads .wrap{justify-content:space-between}}
-.reads b{font-family:var(--display);font-stretch:108%;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.reads b{font-family:var(--display);font-stretch:108%;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
 .reads span{font-weight:600;color:var(--ink-2)}
 
 /* Warum */
@@ -145,8 +161,8 @@ h2 em{font-style:normal;color:var(--route)}
 .gripes{display:grid;gap:clamp(1.6rem,3vw,2.4rem);counter-reset:g}
 .gripes li{position:relative;padding-left:clamp(3.4rem,6vw,4.8rem);counter-increment:g}
 .gripes li::before{content:"0" counter(g);position:absolute;left:0;top:-.5rem;font-family:var(--display);font-stretch:125%;font-weight:850;font-style:italic;font-size:clamp(2rem,3.6vw,2.9rem);line-height:1;color:var(--route-pale)}
-.gripes q{display:block;quotes:"„" "“";font-size:.95rem;color:var(--ink-3);font-style:italic;margin-bottom:.25rem}
-.gripes h3{font-family:var(--display);font-stretch:110%;font-weight:750;font-size:clamp(1.15rem,1.8vw,1.42rem);line-height:1.2;letter-spacing:-.01em}
+.gripes q{display:block;quotes:"„" "“";font-size:.9375rem;color:var(--ink-3);font-style:italic;margin-bottom:.25rem}
+.gripes h3{font-family:var(--display);font-stretch:112%;font-weight:700;font-size:clamp(1.125rem,1.8vw,1.4375rem);line-height:1.2;letter-spacing:-.01em;text-wrap:balance}
 .gripes p{margin-top:.45rem;color:var(--ink-2);font-size:1rem;max-width:36em}
 
 /* Umziehen */
@@ -154,20 +170,19 @@ h2 em{font-style:normal;color:var(--route)}
 .steps{display:grid;gap:1.9rem}
 .steps li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1.1rem 1.4rem;align-items:start}
 .steps .n{font-family:var(--display);font-stretch:125%;font-weight:900;font-size:clamp(2.6rem,5vw,4rem);line-height:.82;color:var(--route);letter-spacing:-.03em;min-width:1.5em}
-.steps .n::before{content:"’";color:var(--route)}
-.steps h3{font-family:var(--display);font-stretch:110%;font-weight:750;font-size:1.22rem}
+.steps h3{font-family:var(--display);font-stretch:112%;font-weight:700;font-size:1.25rem}
 .steps p{color:var(--ink-2);margin-top:.3rem;font-size:1rem}
 .report{background:var(--card);border-radius:4px;box-shadow:0 30px 60px -34px rgba(29,27,51,.35),0 0 0 1px rgba(29,27,51,.05);padding:1.4rem 1.5rem 1.2rem}
 .report header{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding-bottom:.8rem;border-bottom:2px solid var(--ink)}
-.report header b{font-family:var(--display);font-stretch:112%;font-weight:780;font-size:1.05rem}
-.report header span,.sample{font-size:.7rem;font-weight:750;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
-.report li{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding-block:.72rem;border-bottom:1px dotted var(--line);font-size:.93rem;font-variant-numeric:tabular-nums}
-.report li span:first-child{min-width:0;overflow-wrap:anywhere;font-weight:550}
-.st{flex:none;font-size:.78rem;font-weight:750;letter-spacing:.04em}
+.report header b{font-family:var(--display);font-stretch:112%;font-weight:800;font-size:1.0625rem}
+.report header span,.sample{font-size:.75rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.report li{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding-block:.72rem;border-bottom:1px dotted var(--line);font-size:.9375rem;font-variant-numeric:tabular-nums}
+.report li span:first-child{min-width:0;overflow-wrap:anywhere;font-weight:600}
+.st{flex:none;font-size:.875rem;font-weight:700;letter-spacing:.02em}
 .st.new{color:#1E7A52}.st.dup{color:var(--ink-3)}.st.err{color:var(--route-deep)}
-.report footer{padding-top:.85rem;font-size:.82rem;color:var(--ink-3)}
+.report footer{padding-top:.85rem;font-size:.875rem;color:var(--ink-3)}
 .io{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.4rem clamp(1.5rem,4vw,3.5rem);margin-top:clamp(2.4rem,5vw,3.6rem);padding-top:1.8rem;border-top:1px solid var(--line)}
-.io dt{font-family:var(--display);font-stretch:108%;font-size:.74rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:.4rem}
+.io dt{font-family:var(--display);font-stretch:108%;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:.4rem}
 .io dd{color:var(--ink-2);font-size:1rem}
 
 /* Funktionen */
@@ -176,43 +191,47 @@ h2 em{font-style:normal;color:var(--route)}
 .shots{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:0;padding-block:1.5rem;isolation:isolate}
 .shots::before{content:"";position:absolute;z-index:-2;left:50%;top:50%;width:min(78%,360px);aspect-ratio:1;border:1px solid var(--line);transform:translate(-50%,-50%) rotate(45deg)}
 .shots::after{content:"";position:absolute;z-index:-2;left:50%;top:50%;width:min(58%,270px);aspect-ratio:1;background:#fff;transform:translate(-50%,-50%) rotate(45deg);opacity:.75}
-.phone{position:relative;width:min(46%,236px);aspect-ratio:660/1434;border-radius:11.5% / 5.3%;background:#15131f;padding:1.7%;box-shadow:0 34px 60px -30px rgba(29,27,51,.55),0 0 0 1px rgba(29,27,51,.12)}
+.phone{position:relative;display:block;width:min(54%,270px);cursor:zoom-in;transition:transform .25s var(--ease);aspect-ratio:660/1434;border-radius:11.5% / 5.3%;background:#15131f;padding:1.7%;box-shadow:0 34px 60px -30px rgba(29,27,51,.55),0 0 0 1px rgba(29,27,51,.12)}
 .phone img{width:100%;height:100%;object-fit:cover;border-radius:10% / 4.6%}
-.phone + .phone{margin-left:-7%;margin-bottom:9%;z-index:-1}
-.tag{display:inline-block;font-family:var(--display);font-stretch:108%;font-size:.7rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;padding:.34rem .7rem;border:1.5px solid currentColor;color:var(--ink-2);margin-bottom:1rem}
+.phone + .phone{width:min(50%,250px);margin-left:-11%;margin-bottom:9%;z-index:-1}
+@media (hover:hover){.phone:hover{transform:translateY(-6px)}}
+.tag{display:inline-block;font-family:var(--display);font-stretch:108%;font-size:.75rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;padding:.34rem .7rem;border:1.5px solid currentColor;color:var(--ink-2);margin-bottom:1rem}
 .tag.full{color:var(--route-deep)}
-.feat h3{font-family:var(--display);font-stretch:114%;font-weight:780;font-size:clamp(1.5rem,2.6vw,2.15rem);line-height:1.1;letter-spacing:-.015em;text-wrap:balance}
+.feat h3{font-family:var(--display);font-stretch:112%;font-weight:800;font-size:clamp(1.5rem,2.6vw,2.15rem);line-height:1.1;letter-spacing:-.015em;text-wrap:balance}
 .feat p{margin-top:.8rem;color:var(--ink-2)}
 .ticks{margin-top:1.2rem;display:grid;gap:.55rem}
 .ticks li{position:relative;padding-left:1.5rem;font-size:1rem}
 .ticks li::before{content:"";position:absolute;left:.1rem;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--route)}
-.rename{margin-top:1.5rem;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;font-size:.95rem;color:var(--ink-2);padding:1rem 1.1rem;background:#fff;border-left:3px solid var(--route)}
+.rename{margin-top:1.5rem;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;font-size:.9375rem;color:var(--ink-2);padding:1rem 1.1rem;background:#fff;border-left:3px solid var(--route)}
 .rename s{color:var(--ink-3)}
-.rename strong{font-family:var(--display);font-stretch:110%;font-weight:780;color:var(--ink)}
-.rename small{flex-basis:100%;font-size:.86rem;color:var(--ink-2)}
+.rename strong{font-family:var(--display);font-stretch:112%;font-weight:800;color:var(--ink)}
+.rename small{flex-basis:100%;font-size:.875rem;color:var(--ink-2)}
 
 /* Preis */
 .plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(1.2rem,3vw,2rem);margin-top:clamp(2.2rem,5vw,3.6rem);align-items:stretch}
 .plan{background:var(--card);padding:clamp(1.5rem,3vw,2.4rem);box-shadow:0 0 0 1px rgba(29,27,51,.06);display:flex;flex-direction:column}
 .plan.full{background:#FFF8FA;box-shadow:0 0 0 2px var(--route)}
-.plan h3{font-family:var(--display);font-stretch:118%;font-weight:820;font-size:clamp(1.6rem,3vw,2.3rem);letter-spacing:-.02em;line-height:1}
-.plan .sub{margin-top:.5rem;font-size:.78rem;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.plan h3{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.3rem 1rem;font-family:var(--display);font-stretch:118%;font-weight:800;font-size:clamp(1.6rem,3vw,2.3rem);letter-spacing:-.02em;line-height:1}
+.amount{white-space:nowrap;font-variant-numeric:tabular-nums}
+.plan.full .amount{color:var(--route-deep)}
+.plan .sub{margin-top:.6rem;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
 .plan.full .sub{color:var(--route-deep)}
-.plan ul{margin-top:1.5rem;display:grid;gap:.6rem;font-size:.98rem}
+.plan .terms{margin-top:.9rem;color:var(--ink-2);font-size:1rem}
+.plan ul{margin-top:1.3rem;display:grid;gap:.6rem;font-size:1rem}
 .plan li{position:relative;padding-left:1.5rem}
 .plan li::before{content:"";position:absolute;left:.1rem;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--route)}
-.plan-note{margin-top:1.6rem;color:var(--ink-2);font-size:.97rem;max-width:52em}
+.plan-note{margin-top:1.6rem;color:var(--ink-2);font-size:1rem;max-width:52em}
 
 /* Nicht gemacht */
 .nots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem clamp(1.5rem,4vw,4rem);margin-top:clamp(2rem,4vw,3rem)}
 .nots div{padding-top:1rem;border-top:2px solid var(--ink)}
-.nots dt{font-family:var(--display);font-stretch:110%;font-weight:760;font-size:1.1rem}
-.nots dd{margin-top:.3rem;color:var(--ink-2);font-size:.98rem}
+.nots dt{font-family:var(--display);font-stretch:112%;font-weight:700;font-size:1.125rem}
+.nots dd{margin-top:.3rem;color:var(--ink-2);font-size:1rem}
 
 /* Fragen */
 .faq{margin-top:clamp(2rem,4vw,3rem);border-top:2px solid var(--ink);max-width:880px}
 .faq details{border-bottom:1px solid var(--line)}
-.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1.2rem;padding:1.15rem 0;font-family:var(--display);font-stretch:108%;font-weight:700;font-size:1.1rem;user-select:none}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1.2rem;padding:1.15rem 0;font-family:var(--display);font-stretch:108%;font-weight:700;font-size:1.125rem;user-select:none}
 .faq summary::-webkit-details-marker{display:none}
 .faq summary::after{content:"";flex:none;width:14px;height:14px;background:linear-gradient(var(--route),var(--route)) center/100% 2.5px no-repeat,linear-gradient(var(--route),var(--route)) center/2.5px 100% no-repeat;transition:transform .25s var(--ease)}
 .faq details[open] summary::after{transform:rotate(45deg)}
@@ -224,18 +243,18 @@ h2 em{font-style:normal;color:var(--route)}
 .goal-img{width:100%;max-width:1680px;margin-inline:auto;aspect-ratio:16/7;object-fit:cover;object-position:50% 6%;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 60%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 60%,transparent)}
 .goal .wrap{position:relative;margin-top:clamp(-9rem,-12vw,-4rem);padding-left:calc(var(--gutter) + var(--spine));padding-bottom:clamp(3rem,7vw,6rem)}
 .goal h2{max-width:14em}
-.goal p{margin-top:1rem;color:var(--ink-2);max-width:36em}
-.goal .way::after{content:"";position:absolute;left:calc(-1 * var(--spine) + 26px);bottom:50%;height:200vh;width:5px;background-image:radial-gradient(circle,var(--route) 1.7px,transparent 2.1px);background-size:5px 11px;background-repeat:repeat-y;z-index:-1}
+.goal p:not(.way):not(.launch-when){margin-top:1rem;color:var(--ink-2);max-width:36em}
+.goal .way::after{content:"";position:absolute;left:calc(-1 * var(--spine) + 26px + .7em);bottom:50%;height:200vh;width:5px;background-image:radial-gradient(circle,var(--route) 1.7px,transparent 2.1px);background-size:5px 11px;background-repeat:repeat-y;z-index:-1}
 @media (max-width:899px){.goal .way::after{display:none}}
-.goal .way::before{width:22px;height:22px;left:calc(-1 * var(--spine) + 17.5px);background:var(--paper);border:6px solid var(--route)}
+.goal .way::before{width:22px;height:22px;left:calc(-1 * var(--spine) + 17.5px + .7em);background:var(--paper);border:6px solid var(--route)}
 
 /* Fuß */
-.foot{background:var(--paper-hi);border-top:1px solid var(--line);color:var(--ink-2);font-size:.9rem}
+.foot{background:var(--paper-hi);border-top:1px solid var(--line);color:var(--ink-2);font-size:.875rem}
 .foot .wrap{padding-block:2.4rem 2.8rem;display:grid;gap:1.4rem}
 .foot nav{display:flex;flex-wrap:wrap;gap:.3rem 1.8rem}
-.foot nav a{color:var(--ink);text-decoration:none;font-weight:650;padding-block:.6rem}
+.foot nav a{color:var(--ink);text-decoration:none;font-weight:600;padding-block:.75rem}
 @media (hover:hover){.foot nav a:hover{color:var(--route-deep)}}
-.foot p{max-width:70em;line-height:1.55;color:var(--ink-2)}
+.foot p{max-width:72ch;line-height:1.55;color:var(--ink-2)}
 
 /* Bewegung */
 @media (prefers-reduced-motion:no-preference){
@@ -255,7 +274,9 @@ h2 em{font-style:normal;color:var(--route)}
   .word{font-size:15.5vw;top:48%}
   .hero-copy{grid-template-columns:minmax(0,1fr);margin-top:-16vw;gap:1.3rem}
   .pin{width:13px;height:13px;box-shadow:0 0 0 4px rgba(230,62,109,.2)}
-  .pin b{font-size:.6rem;letter-spacing:.08em}
+  .pin b{font-size:.6875rem;letter-spacing:.06em}
+  .pin:nth-of-type(1) .up{transform:translateX(-30%)}
+  .pin:nth-of-type(2) .up{bottom:calc(100% + 18px)}
   .pin.base{display:none}
   .why,.move,.feat{grid-template-columns:minmax(0,1fr)}
   .whypic{position:relative;top:auto;aspect-ratio:1;max-width:26rem;margin-bottom:1.5rem}
@@ -273,9 +294,12 @@ html[data-ios="bald"] .ios-da,html[data-ios="da"] .ios-bald,
 html[data-android="bald"] .an-da,html[data-android="da"] .an-bald{display:none!important}
 .store.alt{background:transparent;color:var(--route-deep);box-shadow:inset 0 0 0 2px var(--route)}
 .store.alt::before{background:var(--route);box-shadow:0 0 0 4px rgba(230,62,109,.18)}
-span.store.alt{color:var(--ink-2);box-shadow:inset 0 0 0 2px var(--line)}
-span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,51,.08)}
-@media (hover:hover){a.store.alt:hover{background:var(--route);color:#fff}a.store.alt:hover::before{background:#fff}}
+@media (hover:hover){a.store.alt:hover{background:var(--route-deep);color:#fff}a.store.alt:hover::before{background:#fff}}
+
+/* Preis-Schalter: data-preis="vor|start|voll" im <html>-Tag. vor = vor dem Start, start = Einführungspreis
+   läuft (Enddatum sichtbar), voll = regulärer Preis. Beträge und Datum: Suche PREIS. */
+.p-vor,.p-start,.p-voll{display:none}
+html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis="voll"] .p-voll{display:inline}
 </style>
 </head>
 <body>
@@ -285,11 +309,10 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
   <div class="wrap">
     <a class="brand" href="#" aria-label="Spurlog, zum Seitenanfang"><img src="img/icon-256.png" alt="" width="34" height="34">Spurlog</a>
     <nav class="nav" aria-label="Abschnitte">
-      <a href="#umziehen">Umziehen</a>
-      <a href="#funktionen">Funktionen</a>
+      <a class="wide" href="#umziehen">Umziehen</a>
+      <a class="wide" href="#funktionen">Funktionen</a>
       <a href="#preis">Preis</a>
       <a href="#fragen">Fragen</a>
-      <span class="soon ios-bald">Bald im App Store</span>
       <a class="soon ios-da" href="#store">Laden</a>
       <a class="lang" href="en/" hreflang="en" lang="en" aria-label="This page in English">EN</a>
     </nav>
@@ -300,7 +323,7 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
 <section class="hero" aria-labelledby="claim">
   <div class="stage">
     <div class="scene">
-      <img class="stage-img" src="img/a-grat.jpg" alt="" width="2400" height="1350" fetchpriority="high">
+      <img class="stage-img" src="img/a-grat.jpg" srcset="img/a-grat-1200.webp 1200w, img/a-grat-1800.webp 1800w, img/a-grat.jpg 2400w" sizes="(max-width:899px) 150vw, (max-width:1680px) 100vw, 1680px" alt="" width="2400" height="1350" fetchpriority="high">
       <p class="word" aria-hidden="true">SPURLOG</p>
       <svg class="route" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0 161.5 L65.2 213.3 L94.9 256.1 L140.5 273.8 L217.7 268.5 L266.5 241.2 L372.2 224.5 L435.4 239.4 L544.3 196.6 L618.4 214.1 L667.1 187.5 L776.6 208.7 L831.6 259.6 L858.2 264.5 L929.7 233.3 L971.5 252.8 L1124.1 163.9 L1263.9 159.4 L1293 130 L1343.7 137.1 L1362.7 120.3 L1539.9 153.4 L1562.7 122.6"/>
@@ -319,20 +342,21 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
     </div>
     <div>
       <p class="lede">Spurlog sammelt deine Aktivitäten aus Uhr, Apple Health<span class="an-da">, Health Connect</span> oder Strava-Export an einem Ort und wertet sie direkt auf deinem <span class="an-bald">iPhone</span><span class="an-da">Handy</span> aus. Du brauchst dafür kein Konto, kein Abo und keine Cloud.</p>
-      <div class="cta-row">
-        <!-- STORE-LINK App Store: href eintragen, bevor data-ios="da" gesetzt wird -->
-        <span class="store ios-bald">Bald im App Store</span>
-        <a class="store ios-da" href="https://apps.apple.com/de/app/APP-STORE-ID">Im App Store laden</a>
-        <!-- STORE-LINK Google Play: Anwendungs-ID prüfen, bevor data-android="da" gesetzt wird -->
-        <span class="store alt an-bald">Android: bald bei Google Play</span>
-        <a class="store alt an-da" href="https://play.google.com/store/apps/details?id=com.dominikallgeier.spurlog&amp;hl=de">Bei Google Play laden</a>
+      <div class="launch ios-bald">
+        <!-- STARTTERMIN: hier und im Abschnitt „Ziel“ anpassen -->
+        <p class="launch-when">Erscheint voraussichtlich Anfang Dezember 2026 im App Store.</p>
+        <!-- PREIS: Startpreis und regulärer Preis -->
+        <p class="launch-note">Das Archiv ist kostenlos. Die Vollversion kostet zum Start <b>9,99 €</b>, danach 14,99 €, einmalig und ohne Abo.<span class="an-bald"> Die Android-Version folgt nach einer Testphase bei Google Play.</span></p>
         <a class="more" href="#funktionen">Was Spurlog kann</a>
       </div>
-      <ul class="facts">
-        <li>Kein Tracking</li>
-        <li>Rechnet auch im Flugmodus</li>
-        <li>Deutsch und Englisch</li>
-      </ul>
+      <div class="cta-row">
+        <!-- STORE-LINK App Store: href eintragen, bevor data-ios="da" gesetzt wird -->
+        <a class="store ios-da" href="https://apps.apple.com/de/app/APP-STORE-ID">Im App Store laden</a>
+        <!-- STORE-LINK Google Play: Anwendungs-ID prüfen, bevor data-android="da" gesetzt wird -->
+        <a class="store alt an-da" href="https://play.google.com/store/apps/details?id=com.dominikallgeier.spurlog&amp;hl=de">Bei Google Play laden</a>
+        <a class="more ios-da" href="#funktionen">Was Spurlog kann</a>
+      </div>
+      <p class="launch-note ios-da an-bald">Die Android-Version folgt nach einer Testphase bei Google Play.</p>
     </div>
   </div>
 </section>
@@ -356,7 +380,7 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
     <h2 id="h-warum">Fünf Dinge, die an Sport-Apps nerven. Und was Spurlog <em>stattdessen</em> macht.</h2>
     <div class="why">
       <figure class="whypic">
-        <img src="img/a-trail.jpg" alt="Eine Person läuft auf einem felsigen Grat hoch über dem Wolkenmeer, von hinten gesehen" width="1200" height="1600" loading="lazy">
+        <img src="img/a-trail.jpg" srcset="img/a-trail-800.webp 800w, img/a-trail.jpg 1200w" sizes="(max-width:899px) min(100vw, 26rem), 36vw" alt="Eine Person läuft auf einem felsigen Grat hoch über dem Wolkenmeer, von hinten gesehen" width="1200" height="1600" loading="lazy">
         <svg viewBox="0 0 1200 1600" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M826 1600 L784 1500 L742 1404 L690 1290 L648 1190 L622 1118 L606 1078"/><circle class="halo" cx="606" cy="1078" r="24"/><circle cx="606" cy="1078" r="13"/></svg>
       </figure>
       <ol class="gripes">
@@ -383,7 +407,8 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
         <li>
           <q>Schon wieder ein Abo.</q>
           <h3>Einmal kaufen, fertig.</h3>
-          <p>Die Vollversion ist ein einmaliger Kauf. Es gibt kein Abo, keine Testphase und keine automatische Verlängerung. Der Kauf gilt über die Familienfreigabe auch für deine Familie.</p>
+          <!-- PREIS -->
+          <p>Die Vollversion ist ein einmaliger Kauf<span class="p-vor p-start">: zum Start 9,99 €, danach 14,99 €</span><span class="p-voll"> für 14,99 €</span>. Es gibt kein Abo, keine Testphase und keine automatische Verlängerung. Der Kauf gilt über die Familienfreigabe auch für deine Familie.</p>
         </li>
       </ol>
     </div>
@@ -397,7 +422,7 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
     <p class="sec-lede">Du musst nirgends kündigen und nichts verbinden. Spurlog liest die Dateien, die du schon hast. Getestet ist das mit einem echten Strava-Export aus 1.321 Aktivitäten.</p>
     <div class="move">
       <ol class="steps">
-        <li><span class="n" aria-hidden="true">01</span><div><h3>Daten holen</h3><p>Fordere bei Strava deinen Datenexport an, nimm die FIT-Dateien deiner Uhr oder erlaube den Zugriff auf deine Workouts in Apple Health.</p></div></li>
+        <li><span class="n" aria-hidden="true">01</span><div><h3>Daten holen</h3><p>Fordere bei Strava deinen Datenexport an: auf strava.com unter Einstellungen → Mein Konto → „Deinen Account herunterladen“. Dein Strava-Konto bleibt dabei bestehen, der Link kommt per E-Mail und braucht meist ein paar Stunden.<span class="ios-bald"> Wer ihn jetzt anfordert, hat ihn zum Start bereit.</span> Oder nimm die FIT-Dateien deiner Uhr, oder erlaube den Zugriff auf deine Workouts in Apple Health.</p></div></li>
         <li><span class="n" aria-hidden="true">02</span><div><h3>In Spurlog öffnen</h3><p>Über die Dateien-App, über „Öffnen in“ oder das Teilen-Menü. Ein Strava-Export geht als ganze ZIP-Datei hinein, auch mit tausenden Aktivitäten.</p></div></li>
         <li><span class="n" aria-hidden="true">03</span><div><h3>Ergebnis prüfen</h3><p>Der Bericht zeigt jede Datei: neu, bereits vorhanden oder nicht lesbar mit Grund. Wer dieselbe Datei zweimal importiert, bekommt trotzdem nur einen Eintrag.</p></div></li>
       </ol>
@@ -425,12 +450,12 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
   <div class="wrap">
     <p class="way">Funktionen</p>
     <h2 id="h-funktionen">Ein Archiv, das mit deinen Daten etwas anfangen kann.</h2>
-    <p class="sec-lede">Die Bildschirmfotos zeigen die App mit Beispieldaten.</p>
+    <p class="sec-lede">Die Bildschirmfotos zeigen die App mit Beispieldaten. Antippen öffnet sie in voller Größe.</p>
 
     <article class="feat">
       <div class="shots">
-        <div class="phone"><img src="img/aktivitaeten.webp" alt="Aktivitätenliste mit Übersicht für Woche, Monat und Jahr" width="660" height="1434" loading="lazy"></div>
-        <div class="phone"><img src="img/detail.webp" alt="Detail eines Trailruns mit Karte, Kennzahlen und Höhenprofil" width="600" height="1304" loading="lazy"></div>
+        <a class="phone" href="img/aktivitaeten.webp"><img src="img/aktivitaeten.webp" alt="Aktivitätenliste mit Übersicht für Woche, Monat und Jahr" width="660" height="1434" loading="lazy"></a>
+        <a class="phone" href="img/detail.webp"><img src="img/detail.webp" alt="Detail eines Trailruns mit Karte, Kennzahlen und Höhenprofil" width="600" height="1304" loading="lazy"></a>
       </div>
       <div>
         <span class="tag">Kostenlos</span>
@@ -448,8 +473,8 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
 
     <article class="feat">
       <div class="shots">
-        <div class="phone"><img src="img/trainingslast.webp" alt="Trainingslast mit Fitness, Ermüdung und Form" width="660" height="1434" loading="lazy"></div>
-        <div class="phone"><img src="img/zonen.webp" alt="Wochenvolumen nach Pulszonen" width="660" height="1434" loading="lazy"></div>
+        <a class="phone" href="img/trainingslast.webp"><img src="img/trainingslast.webp" alt="Trainingslast mit Fitness, Ermüdung und Form" width="660" height="1434" loading="lazy"></a>
+        <a class="phone" href="img/zonen.webp"><img src="img/zonen.webp" alt="Wochenvolumen nach Pulszonen" width="660" height="1434" loading="lazy"></a>
       </div>
       <div>
         <span class="tag full">Vollversion</span>
@@ -467,8 +492,8 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
 
     <article class="feat">
       <div class="shots">
-        <div class="phone"><img src="img/aufstieg.webp" alt="Aufstieg, Abfahrt und Pausen einer Skitour" width="660" height="1434" loading="lazy"></div>
-        <div class="phone"><img src="img/saison.webp" alt="Saisonbilanz mit Saisonziel" width="660" height="1434" loading="lazy"></div>
+        <a class="phone" href="img/aufstieg.webp"><img src="img/aufstieg.webp" alt="Aufstieg, Abfahrt und Pausen einer Skitour" width="660" height="1434" loading="lazy"></a>
+        <a class="phone" href="img/saison.webp"><img src="img/saison.webp" alt="Saisonbilanz mit Saisonziel" width="660" height="1434" loading="lazy"></a>
       </div>
       <div>
         <span class="tag full">Vollversion</span>
@@ -487,8 +512,8 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
 
     <article class="feat">
       <div class="shots">
-        <div class="phone"><img src="img/bestzeiten.webp" alt="Bestzeiten mit Leistungskurve und schnellsten 500 Höhenmetern" width="660" height="1434" loading="lazy"></div>
-        <div class="phone"><img src="img/skitour.webp" alt="Detail einer Skitour, die Route ist nach Höhe eingefärbt" width="660" height="1434" loading="lazy"></div>
+        <a class="phone" href="img/bestzeiten.webp"><img src="img/bestzeiten.webp" alt="Bestzeiten mit Leistungskurve und schnellsten 500 Höhenmetern" width="660" height="1434" loading="lazy"></a>
+        <a class="phone" href="img/skitour.webp"><img src="img/skitour.webp" alt="Detail einer Skitour, die Route ist nach Höhe eingefärbt" width="660" height="1434" loading="lazy"></a>
       </div>
       <div>
         <span class="tag full">Vollversion</span>
@@ -513,8 +538,9 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
     <h2 id="h-preis">Das Archiv ist kostenlos. Die Auswertungen kaufst du <em>einmal.</em></h2>
     <div class="plans">
       <div class="plan">
-        <h3>Kostenlos</h3>
+        <h3>Kostenlos <span class="amount">0 €</span></h3>
         <p class="sub">Dauerhaft, ohne Zeitlimit</p>
+        <p class="terms">Was einmal frei ist, wandert nicht mehr hinter einen Kauf.</p>
         <ul>
           <li>Import aus Dateien, Strava-Export und Apple Health</li>
           <li>Alle Aktivitäten mit Suche und Filter</li>
@@ -528,10 +554,10 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
         </ul>
       </div>
       <div class="plan full">
-        <!-- PREIS: Sobald der Preis feststeht, hier unter der Überschrift eintragen, zum Beispiel
-             <p class="sub">Einmalig 0,00 €, kein Abo</p> -->
-        <h3>Vollversion</h3>
+        <!-- PREIS: Startpreis 9,99 €, regulär 14,99 €. Das Enddatum des Startpreises steht nur in der Zeile mit p-start. -->
+        <h3>Vollversion <span class="amount"><span class="p-vor p-start">9,99 €</span><span class="p-voll">14,99 €</span></span></h3>
         <p class="sub">Einmaliger Kauf, kein Abo</p>
+        <p class="terms"><span class="p-vor">Startpreis in den ersten vier Wochen, danach 14,99 €.</span><span class="p-start">Startpreis bis 31. Dezember 2026, danach 14,99 €.</span><span class="p-voll">Einmal zahlen, dauerhaft behalten.</span></p>
         <ul>
           <li>Trainingslast mit Fitness, Ermüdung und Form</li>
           <li>Wochenblatt, Zeit in Pulszonen, Jahresvergleich</li>
@@ -544,7 +570,7 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
         </ul>
       </div>
     </div>
-    <p class="plan-note">Familienfreigabe<span class="an-da"> (iPhone)</span> inklusive. „Käufe wiederherstellen“ funktioniert mit deiner Apple-ID<span class="an-da"> bzw. deinem Google-Konto</span>. Vor dem Kauf zeigt dir die App eine Vorschau aus deinen eigenen Daten.</p>
+    <p class="plan-note"><span class="p-vor p-start">Wer zum Startpreis kauft, behält die Vollversion dauerhaft. </span>Familienfreigabe<span class="an-da"> (iPhone)</span> inklusive. „Käufe wiederherstellen“ funktioniert mit deiner Apple-ID<span class="an-da"> bzw. deinem Google-Konto</span>. Vor dem Kauf zeigt dir die App eine Vorschau aus deinen eigenen Daten.</p>
   </div>
 </section>
 
@@ -572,9 +598,9 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
       <details><summary>Gibt es Spurlog für Android?</summary><p><span class="an-bald">Ja, bald. Die Android-Version ist in Arbeit und erscheint nach einer Testphase bei Google Play.</span><span class="an-da">Ja, bei Google Play, für Geräte ab Android 8. Sie bietet dieselben Auswertungen wie die iPhone-Version und liest Workouts aus Health Connect statt aus Apple Health.</span> Der Kauf der Vollversion gilt jeweils für den Store, in dem du kaufst.</p></details>
       <details><summary>Muss ich meine bisherigen Sport-Apps dafür aufgeben?</summary><p>Nein. Spurlog verbindet sich mit keinem Dienst und ändert dort nichts. Du importierst Dateien oder Health-Workouts und kannst alles andere weiter benutzen.</p></details>
       <details><summary>Was passiert mit meinen Daten, wenn ich das iPhone wechsle?</summary><p>Nutzt du ein iPhone-Backup, können die Daten der App darin enthalten sein. Zusätzlich kannst du in Spurlog ein automatisches Backup in einen Ordner einrichten, zum Beispiel in iCloud Drive, oder das Archiv von Hand als ZIP exportieren. Den Kauf stellst du mit deiner Apple-ID wieder her.</p></details>
-      <details><summary>Liest Spurlog meine Health-Daten im Hintergrund?</summary><p>Nein. Spurlog liest Workouts aus Apple Health nur, wenn du den Import selbst startest, und schreibt nichts hinein. Welche Datenarten die App lesen darf, legst du fest. Mehr dazu steht in der <a href="https://spurlog.app/datenschutz.html">Datenschutzerklärung</a>.</p></details>
+      <details><summary>Liest Spurlog meine Health-Daten im Hintergrund?</summary><p>Nein. Spurlog liest Workouts aus Apple Health nur, wenn du den Import selbst startest, und schreibt nichts hinein. Welche Datenarten die App lesen darf, legst du fest. Mehr dazu steht in der <a href="datenschutz.html">Datenschutzerklärung</a>.</p></details>
       <details><summary>Wie rechnet Spurlog?</summary><p>Offen. In der App steht bei Trainingslast und Prognose, welche Formel und welche Pulswerte verwendet werden. Weil du jede Aktivität als FIT, GPX oder CSV exportieren kannst, lässt sich alles nachrechnen.</p></details>
-      <details><summary>Wo bekomme ich Hilfe?</summary><p>Auf der <a href="https://spurlog.app/support.html">Support-Seite</a> stehen die häufigsten Fragen und die E-Mail-Adresse.</p></details>
+      <details><summary>Wo bekomme ich Hilfe?</summary><p>Auf der <a href="support.html">Support-Seite</a> stehen die häufigsten Fragen und die E-Mail-Adresse.</p></details>
     </div>
   </div>
 </section>
@@ -582,17 +608,17 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
 </div>
 
 <section class="goal" id="store" aria-labelledby="h-ziel">
-  <img class="goal-img" src="img/a-grat.jpg" alt="" width="2400" height="1350" loading="lazy">
+  <img class="goal-img" src="img/a-grat.jpg" srcset="img/a-grat-1200.webp 1200w, img/a-grat-1800.webp 1800w, img/a-grat.jpg 2400w" sizes="(max-width:899px) 134vw, (max-width:1680px) 100vw, 1680px" alt="" width="2400" height="1350" loading="lazy">
   <div class="wrap">
     <p class="way">Ziel</p>
-    <h2 id="h-ziel"><span class="ios-bald">Spurlog erscheint in Kürze im <em>App Store.</em></span><span class="ios-da an-bald">Spurlog gibt es jetzt im <em>App Store.</em></span><span class="ios-da an-da">Spurlog gibt es für <em>iPhone und Android.</em></span></h2>
-    <p>Kostenlos laden, eigene Daten importieren und in Ruhe ansehen. Die Vollversion kaufst du erst, wenn du die Vorschau aus deinen eigenen Aktivitäten gesehen hast.<span class="an-bald"> Die Android-Version folgt in Kürze bei Google Play.</span></p>
+    <h2 id="h-ziel"><!-- STARTTERMIN --><span class="ios-bald">Spurlog erscheint voraussichtlich Anfang Dezember im <em>App Store.</em></span><span class="ios-da an-bald">Spurlog gibt es jetzt im <em>App Store.</em></span><span class="ios-da an-da">Spurlog gibt es für <em>iPhone und Android.</em></span></h2>
+    <!-- PREIS -->
+    <p>Kostenlos laden, eigene Daten importieren und in Ruhe ansehen. Die Vollversion<span class="p-vor p-start"> (zum Start 9,99 €, danach 14,99 €)</span><span class="p-voll"> (einmalig 14,99 €)</span> kaufst du erst, wenn du die Vorschau aus deinen eigenen Aktivitäten gesehen hast.<span class="an-bald"> Die Android-Version folgt in Kürze bei Google Play.</span></p>
     <div class="cta-row">
+        <a class="more ios-bald" href="#umziehen">Strava-Export schon jetzt anfordern</a>
         <!-- STORE-LINK App Store: href eintragen, bevor data-ios="da" gesetzt wird -->
-        <span class="store ios-bald">Bald im App Store</span>
         <a class="store ios-da" href="https://apps.apple.com/de/app/APP-STORE-ID">Im App Store laden</a>
         <!-- STORE-LINK Google Play: Anwendungs-ID prüfen, bevor data-android="da" gesetzt wird -->
-        <span class="store alt an-bald">Android: bald bei Google Play</span>
         <a class="store alt an-da" href="https://play.google.com/store/apps/details?id=com.dominikallgeier.spurlog&amp;hl=de">Bei Google Play laden</a>
     </div>
   </div>
@@ -602,14 +628,14 @@ span.store.alt::before{background:var(--ink-3);box-shadow:0 0 0 4px rgba(29,27,5
 <footer class="foot">
   <div class="wrap">
     <nav aria-label="Rechtliches">
-      <a href="https://spurlog.app/datenschutz.html">Datenschutz</a>
-      <a href="https://spurlog.app/support.html">Support</a>
-      <a href="https://spurlog.app/impressum.html">Impressum</a>
-      <a href="https://spurlog.app/gipfeldaten.html">Gipfeldaten</a>
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="support.html">Support</a>
+      <a href="impressum.html">Impressum</a>
+      <a href="gipfeldaten.html">Gipfeldaten</a>
       <a href="en/" hreflang="en" lang="en">English</a>
       <a href="#inhalt">Nach oben</a>
     </nav>
-    <p>Diese Seite setzt keine Cookies, lädt nichts von fremden Servern und kommt ohne JavaScript aus. Gipfeldaten in der App © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, lizenziert unter der ODbL, als <a href="https://spurlog.app/gipfeldaten.html">Download</a> erhältlich. Apple, iPhone, Apple Watch und App Store sind Marken von Apple Inc. Android, Google Play und Health Connect sind Marken von Google LLC. Strava, Garmin, Wahoo, Coros und Polar sind Marken ihrer Inhaber. Spurlog steht mit keinem dieser Anbieter in Verbindung.</p>
+    <p>Diese Seite setzt keine Cookies, lädt nichts von fremden Servern und kommt ohne JavaScript aus. Gipfeldaten in der App © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, lizenziert unter der ODbL, auf der Seite <a href="gipfeldaten.html">Gipfeldaten</a> zum Herunterladen. Apple, iPhone, Apple Watch und App Store sind Marken von Apple Inc. Android, Google Play und Health Connect sind Marken von Google LLC. Strava, Garmin, Wahoo, Coros und Polar sind Marken ihrer Inhaber. Spurlog steht mit keinem dieser Anbieter in Verbindung.</p>
     <p>© 2026 Dominik Allgeier</p>
   </div>
 </footer>
