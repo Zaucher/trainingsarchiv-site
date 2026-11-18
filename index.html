@@ -270,6 +270,11 @@ button.phone{appearance:none;-webkit-appearance:none;border:0;font:inherit;color
 .nots dt{font-family:var(--display);font-stretch:112%;font-weight:700;font-size:1.125rem}
 .nots dd{margin-top:.3rem;color:var(--ink-2);font-size:1rem}
 
+.tbar{background:var(--ink);color:#fff;font-size:.9375rem;line-height:1.45}
+.tbar .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.3rem 1rem;padding-block:.7rem;text-align:center}
+.tbar b{font-family:var(--display);font-stretch:108%;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--route-pale)}
+.tbar a{color:#fff;font-weight:700;text-decoration:underline;text-decoration-color:var(--route);text-decoration-thickness:2px;text-underline-offset:.2em;white-space:nowrap}
+@media (hover:hover){.tbar a:hover{color:var(--route-pale)}}
 /* Ausblick */
 .next{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(2.2rem,4vw,3.2rem) clamp(1.6rem,4vw,4rem);margin-top:clamp(2rem,4vw,3rem)}
 .next li{position:relative;padding-top:1.7rem}
@@ -371,6 +376,7 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
 <body>
 <a class="skip" href="#inhalt">Zum Inhalt springen</a>
 
+<div class="tbar an-bald"><div class="wrap"><b>Android-Tester gesucht</b><span>Teste Spurlog vor dem Start und behalte die Vollversion gratis.</span><a href="#android-test">So machst du mit</a></div></div>
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#" aria-label="Spurlog, zum Seitenanfang"><img src="img/icon-256.png" alt="" width="34" height="34"><span>Spurlog</span></a>
