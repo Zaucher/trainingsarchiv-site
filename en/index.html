@@ -270,6 +270,24 @@ button.phone{appearance:none;-webkit-appearance:none;border:0;font:inherit;color
 .nots dt{font-family:var(--display);font-stretch:112%;font-weight:700;font-size:1.125rem}
 .nots dd{margin-top:.3rem;color:var(--ink-2);font-size:1rem}
 
+/* Ausblick */
+.next{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2rem clamp(1.4rem,3vw,2.6rem);margin-top:clamp(2rem,4vw,3rem)}
+.next li{position:relative;padding-top:1.7rem}
+.next li::before{content:"";position:absolute;left:0;top:-3px;width:12px;height:12px;border-radius:50%;background:var(--route);box-shadow:0 0 0 4px rgba(230,62,109,.2)}
+.next li::after{content:"";position:absolute;left:22px;right:0;top:0;height:5px;background-image:radial-gradient(circle,var(--route) 1.7px,transparent 2.1px);background-size:11px 5px;background-repeat:repeat-x}
+.next h3{font-family:var(--display);font-stretch:112%;font-weight:700;font-size:1.125rem;line-height:1.25;text-wrap:balance}
+.next p{margin-top:.4rem;color:var(--ink-2);font-size:1rem}
+.tester{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1.2rem clamp(1.5rem,4vw,3.5rem);align-items:center;margin-top:clamp(2.6rem,5vw,4rem);background:var(--card);padding:clamp(1.5rem,3vw,2.2rem);box-shadow:0 0 0 1px rgba(29,27,51,.06),inset 4px 0 0 var(--route);scroll-margin-top:5.5rem}
+.tester .label{font-family:var(--display);font-stretch:108%;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--route-deep)}
+.tester h3{margin-top:.5rem;font-family:var(--display);font-stretch:112%;font-weight:700;font-size:clamp(1.25rem,2vw,1.5rem);line-height:1.2;letter-spacing:-.01em;text-wrap:balance}
+.tester p:not(.label){margin-top:.6rem;color:var(--ink-2);font-size:1rem;max-width:44em}
+.tester .act{display:grid;justify-items:start;gap:.5rem}
+.tester .act small{font-size:.8125rem;color:var(--ink-3);max-width:19em;line-height:1.45}
+.launch-fine a,.launch-note a{color:var(--route-deep);font-weight:600}
+@media (max-width:1099px){.next{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:599px){.next{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:760px){.tester{grid-template-columns:minmax(0,1fr)}.tester .act small{max-width:none}}
+
 /* Fragen */
 .faq{margin-top:clamp(2rem,4vw,3rem);border-top:2px solid var(--ink);max-width:880px}
 .faq details{border-bottom:1px solid var(--line)}
@@ -399,7 +417,7 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
           <a class="more" href="#funktionen">What Spurlog does</a>
         </div>
         <p class="launch-fine">The button opens your mail app with a ready-made message. You get one reply at launch, nothing else. No mail app? Write to <b>dominik.allgeier.apps@gmail.com</b>.</p>
-        <p class="launch-fine an-bald">The Android version comes to Google Play once Google’s mandatory two-week test is complete; the date is not fixed yet.</p>
+        <p class="launch-fine an-bald">The Android version comes to Google Play once Google’s mandatory two-week test is complete; the date is not fixed yet. <a href="#android-test">Join the test and keep the full version.</a></p>
       </div>
       <div class="cta-row">
         <!-- STORE-LINK App Store: fill in href before setting data-ios="da" -->
@@ -408,7 +426,7 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
         <a class="store alt an-da" href="https://play.google.com/store/apps/details?id=com.dominikallgeier.spurlog&amp;hl=en">Get it on Google Play</a>
         <a class="more ios-da" href="#funktionen">What Spurlog does</a>
       </div>
-      <p class="launch-note ios-da an-bald">The Android version comes to Google Play once Google’s mandatory two-week test is complete; the date is not fixed yet.</p>
+      <p class="launch-note ios-da an-bald">The Android version comes to Google Play once Google’s mandatory two-week test is complete; the date is not fixed yet. <a href="#android-test">Join the test and keep the full version.</a></p>
     </div>
   </div>
 </section>
@@ -641,7 +659,32 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
   </div>
 </section>
 
-<section class="sec white" id="fragen" aria-labelledby="h-fragen">
+<section class="sec white" id="ausblick" aria-labelledby="h-ausblick">
+  <div class="wrap">
+    <p class="way">What’s next</p>
+    <h2 id="h-ausblick">What’s coming <em>next.</em></h2>
+    <p class="sec-lede">This is what I’m working on next. I’m deliberately not giving dates, so nothing is promised before it’s ready.</p>
+    <ol class="next">
+      <li><h3>Ski touring in winter</h3><p>A dedicated analysis for ski tours: climbs and descents kept apart, plus a summary of the whole winter.</p></li>
+      <li><h3>Your own entries</h3><p>Add values your watch doesn’t record and use them in your analyses.</p></li>
+      <li><h3>Mountain running</h3><p>Analyses that account for gradient and elevation when you run, not just pace.</p></li>
+      <li><h3>Race replay with weather</h3><p>Follow a race section by section, together with the weather on the day.</p></li>
+    </ol>
+    <div class="tester an-bald" id="android-test">
+      <div>
+        <p class="label">Android test</p>
+        <h3>Test Spurlog on Android and keep the full version.</h3>
+        <p>Before Spurlog comes to Google Play, there’s a closed test that runs for two weeks. As a thank-you, you get the full version for free, for good: once you’ve opened the test version, it stays unlocked on your device. All you need is a device running Android 8 or later and a Google account.</p>
+      </div>
+      <div class="act">
+        <a class="notify" href="mailto:dominik.allgeier.apps@gmail.com?subject=Spurlog%3A%20Android%20test&amp;body=I%E2%80%99d%20like%20to%20test%20the%20Android%20version%20of%20Spurlog.%0A%0AMy%20Google%20account%20(email%20address%20for%20Google%20Play)%3A%20">Sign up for the test</a>
+        <small>The button opens your email app. I’ll add your Google account to the tester list and send you the link.</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="fragen" aria-labelledby="h-fragen">
   <div class="wrap">
     <p class="way">FAQ</p>
     <h2 id="h-fragen">Quick answers.</h2>
@@ -649,7 +692,7 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
       <!-- STARTTERMIN -->
       <details class="ios-bald"><summary>When will Spurlog be released?</summary><p>On the App Store, expected in early December 2026. The Android version comes to Google Play once Google’s mandatory two-week test is complete; the date is not fixed yet. If you like, <a href="mailto:dominik.allgeier.apps@gmail.com?subject=Spurlog%3A%20let%20me%20know%20at%20launch&amp;body=Please%20let%20me%20know%20when%20Spurlog%20is%20released.%0A%0AI%20use%3A%20iPhone%20/%20Android">I’ll let you know by email</a>.</p></details>
       <details><summary>What do I need to use Spurlog?</summary><p>An iPhone with iOS 18 or later and activities as files or in Apple Health, or an Android device running Android 8 or later and activities as files or in Health Connect (Android 9 or later). The app is available in English and German and uses kilometers or miles depending on your device settings.</p></details>
-      <details><summary>Is Spurlog available for Android?</summary><p><span class="an-bald">Yes. Before release, Google requires new developers to run a test with at least twelve testers for two weeks. Once that is complete, Spurlog comes to Google Play; the date is not fixed yet. The Android version offers the same analyses as the iPhone version and reads workouts from Health Connect instead of Apple Health. The launch price applies there for four weeks from the Android launch.</span><span class="an-da">Yes, on Google Play, for devices running Android 8 or later. It offers the same analyses as the iPhone version and reads workouts from Health Connect instead of Apple Health.</span> The full version purchase applies to the store you buy it in.</p></details>
+      <details><summary>Is Spurlog available for Android?</summary><p><span class="an-bald">Yes. Before release, Google requires new developers to run a test with at least twelve testers for two weeks. Once that is complete, Spurlog comes to Google Play; the date is not fixed yet. The Android version offers the same analyses as the iPhone version and reads workouts from Health Connect instead of Apple Health. The launch price applies there for four weeks from the Android launch. Testers get the full version for free; you’ll find how to sign up <a href="#android-test">under What’s next</a>.</span><span class="an-da">Yes, on Google Play, for devices running Android 8 or later. It offers the same analyses as the iPhone version and reads workouts from Health Connect instead of Apple Health.</span> The full version purchase applies to the store you buy it in.</p></details>
       <details><summary>Do I have to give up my other sports apps?</summary><p>No. Spurlog doesn’t connect to any service and doesn’t change anything there. You import files or Health workouts and keep using everything else as before.</p></details>
       <details><summary>What happens to my data when I get a new iPhone?</summary><p>If you use an iPhone backup, the app’s data can be included in it. You can also set up an automatic backup to a folder in Spurlog, for example in iCloud Drive, or export your archive manually as a ZIP. You restore your purchase with your Apple ID.</p></details>
       <details><summary>Does Spurlog read my Health data in the background?</summary><p>No. Spurlog only reads workouts from Apple Health when you start the import yourself, and it never writes anything to Health. You decide which types of data the app may read. Details are in the <a href="privacy.html">privacy policy</a>.</p></details>
