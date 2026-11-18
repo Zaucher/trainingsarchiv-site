@@ -275,6 +275,9 @@ button.phone{appearance:none;-webkit-appearance:none;border:0;font:inherit;color
 .tbar b{font-family:var(--display);font-stretch:108%;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--route-pale)}
 .tbar a{color:#fff;font-weight:700;text-decoration:underline;text-decoration-color:var(--route);text-decoration-thickness:2px;text-underline-offset:.2em;white-space:nowrap}
 @media (hover:hover){.tbar a:hover{color:var(--route-pale)}}
+.an-note{margin-top:1.1rem;max-width:36em;background:var(--card);box-shadow:0 0 0 1px rgba(29,27,51,.06),inset 4px 0 0 var(--route);padding:.8rem 1.1rem .85rem 1.3rem;font-size:.9375rem;line-height:1.5;color:var(--ink-2)}
+.an-note b{display:block;font-family:var(--display);font-stretch:108%;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--route-deep);margin-bottom:.2rem}
+.an-note a{color:var(--route-deep);font-weight:700;white-space:nowrap}
 /* Ausblick */
 .next{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(2.2rem,4vw,3.2rem) clamp(1.6rem,4vw,4rem);margin-top:clamp(2rem,4vw,3rem)}
 .next li{position:relative;padding-top:1.7rem}
@@ -426,7 +429,7 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
           <a class="more" href="#funktionen">Was Spurlog kann</a>
         </div>
         <p class="launch-fine">Der Knopf öffnet dein Mailprogramm mit einer fertigen Nachricht. Du bekommst eine Antwort zum Start, sonst nichts. Kein Mailprogramm? Schreib an <b>dominik.allgeier.apps@gmail.com</b>.</p>
-        <p class="launch-fine an-bald">Die Android-Version erscheint bei Google Play, sobald der zweiwöchige Pflicht-Test von Google abgeschlossen ist; der Termin steht noch nicht fest. <a href="#android-test">Teste mit und behalte die Vollversion.</a></p>
+        <p class="an-note an-bald"><b>Android-Tester gesucht</b>Android folgt nach dem zweiwöchigen Pflicht-Test von Google. Wer jetzt mittestet, behält die Vollversion gratis. <a href="#android-test">So machst du mit</a></p>
       </div>
       <div class="cta-row">
         <!-- STORE-LINK App Store: href eintragen, bevor data-ios="da" gesetzt wird -->
@@ -435,7 +438,7 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
         <a class="store alt an-da" href="https://play.google.com/store/apps/details?id=com.dominikallgeier.spurlog&amp;hl=de">Bei Google Play laden</a>
         <a class="more ios-da" href="#funktionen">Was Spurlog kann</a>
       </div>
-      <p class="launch-note ios-da an-bald">Die Android-Version erscheint bei Google Play, sobald der zweiwöchige Pflicht-Test von Google abgeschlossen ist; der Termin steht noch nicht fest. <a href="#android-test">Teste mit und behalte die Vollversion.</a></p>
+      <p class="an-note ios-da an-bald"><b>Android-Tester gesucht</b>Android folgt nach dem zweiwöchigen Pflicht-Test von Google. Wer jetzt mittestet, behält die Vollversion gratis. <a href="#android-test">So machst du mit</a></p>
     </div>
   </div>
 </section>
