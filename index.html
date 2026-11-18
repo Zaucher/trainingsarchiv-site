@@ -271,12 +271,16 @@ button.phone{appearance:none;-webkit-appearance:none;border:0;font:inherit;color
 .nots dd{margin-top:.3rem;color:var(--ink-2);font-size:1rem}
 
 /* Ausblick */
-.next{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2rem clamp(1.4rem,3vw,2.6rem);margin-top:clamp(2rem,4vw,3rem)}
+.next{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(2.2rem,4vw,3.2rem) clamp(1.6rem,4vw,4rem);margin-top:clamp(2rem,4vw,3rem)}
 .next li{position:relative;padding-top:1.7rem}
 .next li::before{content:"";position:absolute;left:0;top:-3px;width:12px;height:12px;border-radius:50%;background:var(--route);box-shadow:0 0 0 4px rgba(230,62,109,.2)}
 .next li::after{content:"";position:absolute;left:22px;right:0;top:0;height:5px;background-image:radial-gradient(circle,var(--route) 1.7px,transparent 2.1px);background-size:11px 5px;background-repeat:repeat-x}
 .next h3{font-family:var(--display);font-stretch:112%;font-weight:700;font-size:1.125rem;line-height:1.25;text-wrap:balance}
-.next p{margin-top:.4rem;color:var(--ink-2);font-size:1rem}
+.next .intro{margin-top:.4rem;color:var(--ink-2);font-size:1rem}
+.next ul{margin-top:.9rem;display:grid;gap:.55rem;font-size:1rem;color:var(--ink-2)}
+.next ul li{padding-top:0;padding-left:1.3rem}
+.next ul li::before{left:.1rem;top:.62em;width:6px;height:6px;box-shadow:none}
+.next ul li::after{display:none}
 .tester{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1.2rem clamp(1.5rem,4vw,3.5rem);align-items:center;margin-top:clamp(2.6rem,5vw,4rem);background:var(--card);padding:clamp(1.5rem,3vw,2.2rem);box-shadow:0 0 0 1px rgba(29,27,51,.06),inset 4px 0 0 var(--route);scroll-margin-top:5.5rem}
 .tester .label{font-family:var(--display);font-stretch:108%;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--route-deep)}
 .tester h3{margin-top:.5rem;font-family:var(--display);font-stretch:112%;font-weight:700;font-size:clamp(1.25rem,2vw,1.5rem);line-height:1.2;letter-spacing:-.01em;text-wrap:balance}
@@ -284,8 +288,7 @@ button.phone{appearance:none;-webkit-appearance:none;border:0;font:inherit;color
 .tester .act{display:grid;justify-items:start;gap:.5rem}
 .tester .act small{font-size:.8125rem;color:var(--ink-3);max-width:19em;line-height:1.45}
 .launch-fine a,.launch-note a{color:var(--route-deep);font-weight:600}
-@media (max-width:1099px){.next{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:599px){.next{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:759px){.next{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:760px){.tester{grid-template-columns:minmax(0,1fr)}.tester .act small{max-width:none}}
 
 /* Fragen */
@@ -663,12 +666,12 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
   <div class="wrap">
     <p class="way">Ausblick</p>
     <h2 id="h-ausblick">Was als Nächstes <em>kommt.</em></h2>
-    <p class="sec-lede">Daran arbeite ich als Nächstes. Termine nenne ich bewusst keine, damit nichts versprochen ist, was noch nicht fertig ist.</p>
+    <p class="sec-lede">Daran arbeite ich als Nächstes, in dieser Reihenfolge. Termine nenne ich bewusst keine, damit nichts versprochen ist, was noch nicht fertig ist.</p>
     <ol class="next">
-      <li><h3>Skitouren im Winter</h3><p>Eine eigene Auswertung für Skitouren: Aufstiege und Abfahrten getrennt, und eine Bilanz über den ganzen Winter.</p></li>
-      <li><h3>Eigene Angaben</h3><p>Werte, die deine Uhr nicht kennt, selbst ergänzen und in den Auswertungen verwenden.</p></li>
-      <li><h3>Berglauf</h3><p>Auswertungen, die beim Laufen Steigung und Höhenmeter mitdenken, nicht nur die Pace.</p></li>
-      <li><h3>Rennverlauf mit Wetter</h3><p>Einen Wettkampf Abschnitt für Abschnitt nachvollziehen, zusammen mit dem Wetter an diesem Tag.</p></li>
+      <li><h3>Skitouren im Winter</h3><p class="intro">Die Karte „Aufstieg und Abfahrt“ wird genauer.</p><ul><li>Übergänge wie das Umfellen werden erkannt: wie oft, wie lange im Schnitt, der längste und ihr Anteil an der Tour.</li><li>Zeichnet deine Uhr Aufstieg und Abfahrt selbst auf, etwa Garmin im Profil „Backcountry Ski“, übernimmt Spurlog diese Abschnitte.</li><li>Saisontrend: deine Steigrate je Tour über den Winter, mit dem Puls im Aufstieg daneben, dazu die Abfahrtshöhenmeter der Saison.</li><li>Gipfel-Statistik: wie oft du auf welchem Gipfel warst, wann zuerst und zuletzt, und dein schnellster Aufstieg.</li></ul></li>
+      <li><h3>Eigene Angaben</h3><p class="intro">Für alles, was keine Uhr misst.</p><ul><li>Bedingungen zur Tour antippen: Schnee von Pulver bis Firn, Spur, Wetter, Temperaturgefühl und Sicht.</li><li>Daraus in der Saisonbilanz: deine Steigrate je Schneeart, sobald genug Touren zusammenkommen.</li><li>Aktivitäten als Wettkampf markieren. Spurlog zeigt dann die Gesamtzeit mit allen Stopps und sammelt deine Rennen in einer Liste mit Distanz, Höhenmetern und Zeit.</li><li>Deine Angaben wandern mit in Backup und Export.</li></ul></li>
+      <li><h3>Berglauf</h3><p class="intro">Auswertungen, die Steigung und Höhenmeter mitdenken.</p><ul><li>Anstiege als Tabelle: Höhenmeter pro Stunde, Schwierigkeit nach der FIETS-Formel, Gehanteil (wenn die Schrittfrequenz aufgezeichnet ist) und Puls in der ersten und zweiten Hälfte.</li><li>Vertikal-Bestwerte: die meisten Höhenmeter in 5, 10, 20, 30 und 60 Minuten, als Kurve neben deinen Tempo-Bestwerten.</li><li>Tempo nach Steigung: wie schnell du bei welcher Steigung bist, auch im Vergleich zum Vorjahr.</li><li>In der Trainingslast zusätzlich Bergab-Höhenmeter, Höhenmeter je Kilometer und Zeit über 1.500, 2.000 und 2.500 m.</li></ul></li>
+      <li><h3>Rennverlauf mit Wetter</h3><p class="intro">Ein Wettkampf im Rückblick, und was die Datei sonst noch weiß.</p><ul><li>Rennverlauf: jeder Stopp mit Zeitpunkt, Dauer und Höhe, erste gegen zweite Hälfte bergauf und bergab, und wie lange du im Dunkeln unterwegs warst.</li><li>Wetter laut Uhr: Temperatur, gefühlte Temperatur, Luftfeuchte und Wind, wenn deine Uhr oder Apple Health sie mitschreibt. Direkt aus der Datei, ohne Internet.</li><li>Pässe und Hütten in der Offline-Liste, also „Kemptner Hütte“ statt einer Höhenangabe.</li><li>Aufstieg und Abfahrt von Hand korrigieren, wenn die Erkennung einmal danebenliegt.</li></ul></li>
     </ol>
     <div class="tester an-bald" id="android-test">
       <div>

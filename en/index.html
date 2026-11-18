@@ -271,12 +271,16 @@ button.phone{appearance:none;-webkit-appearance:none;border:0;font:inherit;color
 .nots dd{margin-top:.3rem;color:var(--ink-2);font-size:1rem}
 
 /* Ausblick */
-.next{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2rem clamp(1.4rem,3vw,2.6rem);margin-top:clamp(2rem,4vw,3rem)}
+.next{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(2.2rem,4vw,3.2rem) clamp(1.6rem,4vw,4rem);margin-top:clamp(2rem,4vw,3rem)}
 .next li{position:relative;padding-top:1.7rem}
 .next li::before{content:"";position:absolute;left:0;top:-3px;width:12px;height:12px;border-radius:50%;background:var(--route);box-shadow:0 0 0 4px rgba(230,62,109,.2)}
 .next li::after{content:"";position:absolute;left:22px;right:0;top:0;height:5px;background-image:radial-gradient(circle,var(--route) 1.7px,transparent 2.1px);background-size:11px 5px;background-repeat:repeat-x}
 .next h3{font-family:var(--display);font-stretch:112%;font-weight:700;font-size:1.125rem;line-height:1.25;text-wrap:balance}
-.next p{margin-top:.4rem;color:var(--ink-2);font-size:1rem}
+.next .intro{margin-top:.4rem;color:var(--ink-2);font-size:1rem}
+.next ul{margin-top:.9rem;display:grid;gap:.55rem;font-size:1rem;color:var(--ink-2)}
+.next ul li{padding-top:0;padding-left:1.3rem}
+.next ul li::before{left:.1rem;top:.62em;width:6px;height:6px;box-shadow:none}
+.next ul li::after{display:none}
 .tester{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1.2rem clamp(1.5rem,4vw,3.5rem);align-items:center;margin-top:clamp(2.6rem,5vw,4rem);background:var(--card);padding:clamp(1.5rem,3vw,2.2rem);box-shadow:0 0 0 1px rgba(29,27,51,.06),inset 4px 0 0 var(--route);scroll-margin-top:5.5rem}
 .tester .label{font-family:var(--display);font-stretch:108%;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--route-deep)}
 .tester h3{margin-top:.5rem;font-family:var(--display);font-stretch:112%;font-weight:700;font-size:clamp(1.25rem,2vw,1.5rem);line-height:1.2;letter-spacing:-.01em;text-wrap:balance}
@@ -284,8 +288,7 @@ button.phone{appearance:none;-webkit-appearance:none;border:0;font:inherit;color
 .tester .act{display:grid;justify-items:start;gap:.5rem}
 .tester .act small{font-size:.8125rem;color:var(--ink-3);max-width:19em;line-height:1.45}
 .launch-fine a,.launch-note a{color:var(--route-deep);font-weight:600}
-@media (max-width:1099px){.next{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:599px){.next{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:759px){.next{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:760px){.tester{grid-template-columns:minmax(0,1fr)}.tester .act small{max-width:none}}
 
 /* Fragen */
@@ -663,12 +666,12 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
   <div class="wrap">
     <p class="way">What’s next</p>
     <h2 id="h-ausblick">What’s coming <em>next.</em></h2>
-    <p class="sec-lede">This is what I’m working on next. I’m deliberately not giving dates, so nothing is promised before it’s ready.</p>
+    <p class="sec-lede">This is what I’m working on next, in this order. I’m deliberately not giving dates, so nothing is promised before it’s ready.</p>
     <ol class="next">
-      <li><h3>Ski touring in winter</h3><p>A dedicated analysis for ski tours: climbs and descents kept apart, plus a summary of the whole winter.</p></li>
-      <li><h3>Your own entries</h3><p>Add values your watch doesn’t record and use them in your analyses.</p></li>
-      <li><h3>Mountain running</h3><p>Analyses that account for gradient and elevation when you run, not just pace.</p></li>
-      <li><h3>Race replay with weather</h3><p>Follow a race section by section, together with the weather on the day.</p></li>
+      <li><h3>Ski touring in winter</h3><p class="intro">The “Climbs and descents” card gets more precise.</p><ul><li>Transitions such as switching skins are detected: how many, how long on average, the longest one and their share of the tour.</li><li>If your watch records climbs and descents itself, for example Garmin with the “Backcountry Ski” profile, Spurlog uses those sections.</li><li>Season trend: your climbing rate per tour across the winter, with your heart rate on the climb next to it, plus the season’s descent.</li><li>Summit stats: how often you’ve been up which summit, when first and last, and your fastest ascent.</li></ul></li>
+      <li><h3>Your own entries</h3><p class="intro">For everything a watch can’t measure.</p><ul><li>Tap in the conditions of a tour: snow from powder to corn, track, weather, how warm it felt and visibility.</li><li>In your season summary: your climbing rate per snow type, once there are enough tours.</li><li>Mark activities as races. Spurlog then shows the total time including every stop and collects your races in a list with distance, elevation gain and time.</li><li>Your entries are included in backups and exports.</li></ul></li>
+      <li><h3>Mountain running</h3><p class="intro">Analyses that account for gradient and elevation.</p><ul><li>Climbs as a table: vertical meters per hour, difficulty by the FIETS formula, walking share (when cadence is recorded) and heart rate in the first and second half.</li><li>Vertical bests: the most elevation gained in 5, 10, 20, 30 and 60 minutes, as a curve next to your pace bests.</li><li>Pace by gradient: how fast you are on which gradient, also compared with last year.</li><li>Training load also shows elevation loss, meters climbed per kilometer and time above 1,500, 2,000 and 2,500 m.</li></ul></li>
+      <li><h3>Race replay with weather</h3><p class="intro">A race in hindsight, and what else your file knows.</p><ul><li>Race replay: every stop with time, duration and altitude, first versus second half uphill and downhill, and how long you were out in the dark.</li><li>Weather from your watch: temperature, feels-like temperature, humidity and wind, if your watch or Apple Health records them. Straight from the file, no internet needed.</li><li>Passes and huts in the offline list, so you see the hut’s name instead of just an altitude.</li><li>Correct climbs and descents by hand when the detection gets it wrong.</li></ul></li>
     </ol>
     <div class="tester an-bald" id="android-test">
       <div>
