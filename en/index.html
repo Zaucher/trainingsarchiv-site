@@ -295,6 +295,8 @@ button.phone{appearance:none;-webkit-appearance:none;border:0;font:inherit;color
 .tester p:not(.label){margin-top:.6rem;color:var(--ink-2);font-size:1rem;max-width:44em}
 .tester .act{display:grid;justify-items:start;gap:.5rem}
 .tester .act small{font-size:.8125rem;color:var(--ink-3);max-width:19em;line-height:1.45}
+.tester .join{display:grid;gap:.6rem}
+.tester .join b{margin-right:.6em;opacity:.75}
 .launch-fine a,.launch-note a{color:var(--route-deep);font-weight:600}
 @media (max-width:759px){.next{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:760px){.tester{grid-template-columns:minmax(0,1fr)}.tester .act small{max-width:none}}
@@ -689,8 +691,11 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
         <p>Before Spurlog comes to Google Play, there’s a closed test that runs for two weeks. As a thank-you, you get the full version for free, for good: once you’ve opened the test version, it stays unlocked on your device. All you need is a device running Android 8 or later and a Google account.</p>
       </div>
       <div class="act">
-        <a class="notify" href="mailto:dominik.allgeier.apps@gmail.com?subject=Spurlog%3A%20Android%20test&amp;body=I%E2%80%99d%20like%20to%20test%20the%20Android%20version%20of%20Spurlog.%0A%0AMy%20Google%20account%20(email%20address%20for%20Google%20Play)%3A%20">Sign up for the test</a>
-        <small>The button opens your email app. I’ll add your Google account to the tester list and send you the link.</small>
+        <div class="join">
+          <a class="notify" href="https://groups.google.com/g/spurlog-tester" target="_blank" rel="noopener"><b aria-hidden="true">1</b>Join the group</a>
+          <a class="notify" href="https://play.google.com/apps/testing/com.dominikallgeier.spurlog" target="_blank" rel="noopener"><b aria-hidden="true">2</b>Become a tester</a>
+        </div>
+        <small>Join the “Spurlog Tester” group with your Google Play account, then tap “Become a tester” on Google Play. It works right away, no need to wait for me; the download link may take a few minutes.</small>
       </div>
     </div>
   </div>
@@ -704,7 +709,7 @@ html[data-preis="vor"] .p-vor,html[data-preis="start"] .p-start,html[data-preis=
       <!-- STARTTERMIN -->
       <details class="ios-bald"><summary>When will Spurlog be released?</summary><p>On the App Store, expected in early December 2026. The Android version comes to Google Play once Google’s mandatory two-week test is complete; the date is not fixed yet. If you like, <a href="mailto:dominik.allgeier.apps@gmail.com?subject=Spurlog%3A%20let%20me%20know%20at%20launch&amp;body=Please%20let%20me%20know%20when%20Spurlog%20is%20released.%0A%0AI%20use%3A%20iPhone%20/%20Android">I’ll let you know by email</a>.</p></details>
       <details><summary>What do I need to use Spurlog?</summary><p>An iPhone with iOS 18 or later and activities as files or in Apple Health, or an Android device running Android 8 or later and activities as files or in Health Connect (Android 9 or later). The app is available in English and German and uses kilometers or miles depending on your device settings.</p></details>
-      <details><summary>Is Spurlog available for Android?</summary><p><span class="an-bald">Yes. Before release, Google requires new developers to run a test with at least twelve testers for two weeks. Once that is complete, Spurlog comes to Google Play; the date is not fixed yet. The Android version offers the same analyses as the iPhone version and reads workouts from Health Connect instead of Apple Health. The launch price applies there for four weeks from the Android launch. Testers get the full version for free; you’ll find how to sign up <a href="#android-test">under What’s next</a>.</span><span class="an-da">Yes, on Google Play, for devices running Android 8 or later. It offers the same analyses as the iPhone version and reads workouts from Health Connect instead of Apple Health.</span> The full version purchase applies to the store you buy it in.</p></details>
+      <details><summary>Is Spurlog available for Android?</summary><p><span class="an-bald">Yes. Before release, Google requires new developers to run a test with at least twelve testers for two weeks. Once that is complete, Spurlog comes to Google Play; the date is not fixed yet. The Android version offers the same analyses as the iPhone version and reads workouts from Health Connect instead of Apple Health. The launch price applies there for four weeks from the Android launch. Testers get the full version for free; you’ll find how to join <a href="#android-test">under What’s next</a>.</span><span class="an-da">Yes, on Google Play, for devices running Android 8 or later. It offers the same analyses as the iPhone version and reads workouts from Health Connect instead of Apple Health.</span> The full version purchase applies to the store you buy it in.</p></details>
       <details><summary>Do I have to give up my other sports apps?</summary><p>No. Spurlog doesn’t connect to any service and doesn’t change anything there. You import files or Health workouts and keep using everything else as before.</p></details>
       <details><summary>What happens to my data when I get a new iPhone?</summary><p>If you use an iPhone backup, the app’s data can be included in it. You can also set up an automatic backup to a folder in Spurlog, for example in iCloud Drive, or export your archive manually as a ZIP. You restore your purchase with your Apple ID.</p></details>
       <details><summary>Does Spurlog read my Health data in the background?</summary><p>No. Spurlog only reads workouts from Apple Health when you start the import yourself, and it never writes anything to Health. You decide which types of data the app may read. Details are in the <a href="privacy.html">privacy policy</a>.</p></details>
